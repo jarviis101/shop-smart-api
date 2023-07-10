@@ -1,0 +1,16 @@
+# GraphQL schema example
+#
+# https://gqlgen.com/getting-started/
+
+directive @auth on FIELD_DEFINITION
+
+type User {
+  id: ID!
+  name: String!
+}
+
+type Query {
+  me: User! @auth
+}
+
+

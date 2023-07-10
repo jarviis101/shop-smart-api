@@ -1,0 +1,38 @@
+openapi: 3.0.1
+info:
+  title: Shop Smart Backend API
+  description: Shop Smart Backend API
+  version: 1.0.0
+servers:
+  - url: /
+paths:
+  /api/auth:
+    post:
+      summary: Login a user
+      description: Login a user
+      tags:
+        - Authentication
+      requestBody:
+        content:
+          'application/json':
+            schema:
+              $ref: './schemas/auth.yml#/Auth'
+      responses:
+        '200':
+          description: User logged in
+          content:
+            'application/json':
+              schema:
+                $ref: './schemas/auth.yml#/Token'
+        '400':
+          description: Bad request
+          content:
+            'application/json':
+              schema:
+                $ref: './schemas/errors.yml#/BadRequest'
+        '422':
+          description: Unprocessable entity
+          content:
+            'application/json':
+              schema:
+                $ref: './schemas/errors.yml#/UnprocessableEntity'
