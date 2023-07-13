@@ -20,10 +20,14 @@ func (uc *useCase) PreAuthenticate(ctx context.Context, phone string) (string, e
 	return uc.authService.PreAuthenticate(ctx, phone)
 }
 
-func (uc *useCase) Authenticate(ctx context.Context, id string) (string, error) {
-	return uc.authService.Auth(ctx, id)
+func (uc *useCase) Authenticate(user *entity.User) (string, error) {
+	return uc.authService.FullAuthenticate(user)
 }
 
 func (uc *useCase) Get(ctx context.Context, id string) (*entity.User, error) {
 	return uc.finderService.Find(ctx, id)
+}
+
+func (uc *useCase) GetByPhone(ctx context.Context, phone string) (*entity.User, error) {
+	return uc.finderService.FindByPhone(ctx, phone)
 }

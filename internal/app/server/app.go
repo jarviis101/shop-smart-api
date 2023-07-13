@@ -18,7 +18,8 @@ func CreateApplication(c di.Container, sc pkg.Server) app.Application {
 
 func (a *application) Run() error {
 	userUseCase := a.container.ProvideUserUseCase()
-	httpServer := http.CreateServer(a.serverConfig, userUseCase)
+	otpUseCase := a.container.ProvideOTPUseCase()
+	httpServer := http.CreateServer(a.serverConfig, userUseCase, otpUseCase)
 
 	return httpServer.RunServer()
 }

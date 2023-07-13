@@ -7,7 +7,7 @@ import (
 )
 
 type Creator interface {
-	CreateUser(ctx context.Context, user *entity.User) (*entity.User, error)
+	Create(ctx context.Context, user *entity.User) (*entity.User, error)
 }
 
 type creator struct {
@@ -18,6 +18,6 @@ func CreateCreator(r repository.UserRepository) Creator {
 	return &creator{r}
 }
 
-func (c *creator) CreateUser(ctx context.Context, user *entity.User) (*entity.User, error) {
+func (c *creator) Create(ctx context.Context, user *entity.User) (*entity.User, error) {
 	return c.repository.Store(ctx, user)
 }

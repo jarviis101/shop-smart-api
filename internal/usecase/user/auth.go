@@ -9,7 +9,7 @@ import (
 
 type AuthService interface {
 	PreAuthenticate(ctx context.Context, phone string) (string, error)
-	Auth(ctx context.Context, id string) (string, error)
+	FullAuthenticate(user *entity.User) (string, error)
 }
 
 type authService struct {
@@ -25,18 +25,13 @@ func CreateAuthService(r repository.UserRepository, j jwt.Manager, c Creator) Au
 func (s *authService) PreAuthenticate(ctx context.Context, phone string) (string, error) {
 	user, err := s.repository.GetByPhone(ctx, phone)
 	if err != nil && user == nil {
-		user, _ := s.creatorService.CreateUser(ctx, &entity.User{Phone: phone})
+		user, _ := s.creatorService.Create(ctx, &entity.User{Phone: phone})
 		return s.jwtManager.Generate(user, false)
 	}
 
 	return s.jwtManager.Generate(user, false)
 }
 
-func (s *authService) Auth(ctx context.Context, id string) (string, error) {
-	user, err := s.repository.GetById(ctx, id)
-	if err != nil {
-		return "", err
-	}
-
+func (s *authService) FullAuthenticate(user *entity.User) (string, error) {
 	return s.jwtManager.Generate(user, true)
 }

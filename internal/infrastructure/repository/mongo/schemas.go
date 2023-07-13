@@ -14,3 +14,12 @@ type User struct {
 	MiddleName string             `bson:"middle_name,omitempty"`
 	Phone      string             `bson:"phone,omitempty"`
 }
+
+type OTP struct {
+	ID        primitive.ObjectID `bson:"_id,omitempty"`
+	OwnerID   primitive.ObjectID `bson:"owner_id,omitempty"`
+	CreatedAt time.Time          `bson:"created_at,omitempty"`
+	UpdatedAt time.Time          `bson:"updated_at,omitempty"`
+	ExpiredAt time.Time          `bson:"expired_at,omitempty"`
+	Code      string             `bson:"code,omitempty"`
+}

@@ -11,4 +11,7 @@ type (
 		GetByPhone(ctx context.Context, phone string) (*entity.User, error)
 		GetById(ctx context.Context, id string) (*entity.User, error)
 	}
+	OTPRepository interface {
+		Store(ctx context.Context, code, owner string) (*entity.OTP, error)
+	}
 )

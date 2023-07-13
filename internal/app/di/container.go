@@ -6,12 +6,14 @@ import (
 	"shop-smart-api/internal/infrastructure/repository/mongo/repository"
 	"shop-smart-api/internal/pkg/jwt"
 	"shop-smart-api/internal/usecase"
+	"shop-smart-api/internal/usecase/otp"
 	"shop-smart-api/internal/usecase/user"
 	"shop-smart-api/pkg"
 )
 
 type Container interface {
 	ProvideUserUseCase() usecase.UserUseCase
+	ProvideOTPUseCase() usecase.OTPUseCase
 }
 
 type container struct {
@@ -32,6 +34,10 @@ func (c *container) ProvideUserUseCase() usecase.UserUseCase {
 	return c.resolveUserUseCaseDependencies(c.baseRepository, c.baseMapper)
 }
 
+func (c *container) ProvideOTPUseCase() usecase.OTPUseCase {
+	return c.resolveOTPUseCaseDependencies(c.baseRepository, c.baseMapper)
+}
+
 func (c *container) resolveUserUseCaseDependencies(
 	br repository.BaseRepository,
 	bm mapper.BaseMapper,
@@ -46,4 +52,17 @@ func (c *container) resolveUserUseCaseDependencies(
 	userCollector := user.CreateCollector(userRepository)
 
 	return user.CreateUserUseCase(userAuthService, userFinder, userCollector)
+}
+
+func (c *container) resolveOTPUseCaseDependencies(
+	br repository.BaseRepository,
+	bm mapper.BaseMapper,
+) usecase.OTPUseCase {
+	otpGenerator := otp.CreateGenerator()
+	otpMapper := mapper.CreateOTPMapper(bm)
+	otpRepository := repository.CreateOTPRepository(br, c.database.Collection("otp"), otpMapper)
+	otpCreator := otp.CreateCreator(otpRepository, otpGenerator)
+	otpSender := otp.CreateSender()
+
+	return otp.CreateOTPUseCase(otpCreator, otpSender)
 }

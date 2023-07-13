@@ -20,6 +20,7 @@ import (
 type http struct {
 	serverConfig    pkg.Server
 	userUseCase     usecase.UserUseCase
+	otpUseCase      usecase.OTPUseCase
 	userTransformer transformers.UserTransformer
 	validator       *http_validator.Validator
 	echo            *echo.Echo
@@ -28,6 +29,7 @@ type http struct {
 func CreateServer(
 	sc pkg.Server,
 	u usecase.UserUseCase,
+	o usecase.OTPUseCase,
 ) controller.Server {
 	v := http_validator.CreateValidator(validator.New())
 	e := echo.New()
@@ -41,6 +43,7 @@ func CreateServer(
 	return &http{
 		serverConfig:    sc,
 		userUseCase:     u,
+		otpUseCase:      o,
 		userTransformer: ut,
 		validator:       v,
 		echo:            e,
@@ -57,11 +60,11 @@ func (h *http) RunServer() error {
 
 func (h *http) appendRestRoutes(e *echo.Echo) {
 	apiGroup := e.Group("/api")
-	authRouter := router.CreateAuthRouterManager(apiGroup, h.validator, h.userUseCase)
+	authRouter := router.CreateAuthRouterManager(apiGroup, h.validator, h.userUseCase, h.otpUseCase)
 	authRouter.PopulateRoutes()
 
 	otpGroup := apiGroup.Group("/otp")
-	otpRouter := router.CreateOTPRouterManager(otpGroup, h.serverConfig)
+	otpRouter := router.CreateOTPRouterManager(h.userUseCase, otpGroup, h.serverConfig)
 	otpRouter.PopulateRoutes()
 }
 

@@ -9,6 +9,7 @@ import (
 const (
 	header                  = "Authorization"
 	excludedStringFromToken = "Bearer "
+	Key                     = "currentUser"
 )
 
 var claims *jwt.UserClaims
@@ -25,11 +26,8 @@ func OTPAuthMiddleware(secret string) echo.MiddlewareFunc {
 				return echo.NewHTTPError(http.StatusUnauthorized, err.Error())
 			}
 
-			if err := next(c); err != nil {
-				return err
-			}
-
-			return nil
+			c.Set(Key, claims.UserId)
+			return next(c)
 		}
 	}
 }

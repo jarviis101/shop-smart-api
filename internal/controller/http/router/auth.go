@@ -1,9 +1,7 @@
 package router
 
 import (
-	"context"
 	"github.com/labstack/echo/v4"
-	"log"
 	"net/http"
 	"shop-smart-api/internal/controller/http/types"
 	"shop-smart-api/internal/controller/http/validator"
@@ -11,13 +9,19 @@ import (
 )
 
 type authRouteManager struct {
-	group     *echo.Group
-	validator *validator.Validator
-	useCase   usecase.UserUseCase
+	group       *echo.Group
+	validator   *validator.Validator
+	userUseCase usecase.UserUseCase
+	otpUseCase  usecase.OTPUseCase
 }
 
-func CreateAuthRouterManager(g *echo.Group, v *validator.Validator, u usecase.UserUseCase) RouteManager {
-	return &authRouteManager{g, v, u}
+func CreateAuthRouterManager(
+	g *echo.Group,
+	v *validator.Validator,
+	u usecase.UserUseCase,
+	o usecase.OTPUseCase,
+) RouteManager {
+	return &authRouteManager{g, v, u, o}
 }
 
 func (r *authRouteManager) PopulateRoutes() {
@@ -25,6 +29,7 @@ func (r *authRouteManager) PopulateRoutes() {
 }
 
 func (r *authRouteManager) auth(c echo.Context) error {
+	ctx := c.Request().Context()
 	u := &types.LoginUserRequest{}
 	if err := c.Bind(u); err != nil {
 		return echo.NewHTTPError(http.StatusBadRequest, err.Error())
@@ -34,14 +39,21 @@ func (r *authRouteManager) auth(c echo.Context) error {
 		return err
 	}
 
-	token, err := r.useCase.PreAuthenticate(context.Background(), u.Phone)
+	token, err := r.userUseCase.PreAuthenticate(ctx, u.Phone)
 	if err != nil {
 		return echo.NewHTTPError(http.StatusBadRequest, err.Error())
 	}
+
+	// TODO: In a future rework this
+	user, err := r.userUseCase.GetByPhone(ctx, u.Phone)
+	if err != nil {
+		return err
+	}
+
+	if err := r.otpUseCase.Send(ctx, user); err != nil {
+		return err
+	}
+
 	response := &types.TokenResponse{Token: token}
-
-	// TODO: send otp
-	log.Println("Send OTP")
-
 	return c.JSON(http.StatusOK, response)
 }
