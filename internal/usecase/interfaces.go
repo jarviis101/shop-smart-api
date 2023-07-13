@@ -14,6 +14,6 @@ type (
 	}
 	OTPUseCase interface {
 		Send(ctx context.Context, owner *entity.User) error
-		Verify(ctx context.Context, code string) bool
+		Verify(ctx context.Context, owner *entity.User, code string) error
 	}
 )

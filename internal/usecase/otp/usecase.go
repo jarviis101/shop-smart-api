@@ -7,23 +7,18 @@ import (
 )
 
 type useCase struct {
-	creator Creator
-	sender  Sender
+	sender    Sender
+	validator Validator
 }
 
-func CreateOTPUseCase(c Creator, s Sender) usecase.OTPUseCase {
-	return &useCase{c, s}
+func CreateOTPUseCase(s Sender, v Validator) usecase.OTPUseCase {
+	return &useCase{s, v}
 }
 
 func (oc *useCase) Send(ctx context.Context, owner *entity.User) error {
-	_, err := oc.creator.Create(ctx, owner.ID)
-	if err != nil {
-		return err
-	}
-
-	return oc.sender.SendOTP()
+	return oc.sender.SendOTP(ctx, owner)
 }
 
-func (oc *useCase) Verify(ctx context.Context, code string) bool {
-	return false
+func (oc *useCase) Verify(ctx context.Context, owner *entity.User, code string) error {
+	return oc.validator.Validate(ctx, owner.ID, code)
 }

@@ -1,7 +1,7 @@
 package types
 
 type (
-	LoginUserRequest struct {
+	AuthUserRequest struct {
 		Phone string `json:"phone" validate:"required"`
 	}
 

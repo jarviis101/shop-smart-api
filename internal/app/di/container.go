@@ -62,7 +62,8 @@ func (c *container) resolveOTPUseCaseDependencies(
 	otpMapper := mapper.CreateOTPMapper(bm)
 	otpRepository := repository.CreateOTPRepository(br, c.database.Collection("otp"), otpMapper)
 	otpCreator := otp.CreateCreator(otpRepository, otpGenerator)
-	otpSender := otp.CreateSender()
+	otpSender := otp.CreateSender(otpCreator)
+	otpValidator := otp.CreateValidator(otpRepository)
 
-	return otp.CreateOTPUseCase(otpCreator, otpSender)
+	return otp.CreateOTPUseCase(otpSender, otpValidator)
 }

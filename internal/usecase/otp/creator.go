@@ -21,5 +21,6 @@ func CreateCreator(r repository.OTPRepository, g Generator) Creator {
 
 func (c *creator) Create(ctx context.Context, owner string) (*entity.OTP, error) {
 	code := c.generator.Generate()
-	return c.repository.Store(ctx, code, owner)
+
+	return c.repository.Store(ctx, owner, code)
 }

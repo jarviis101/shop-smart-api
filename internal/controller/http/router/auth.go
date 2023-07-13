@@ -18,10 +18,10 @@ type authRouteManager struct {
 func CreateAuthRouterManager(
 	g *echo.Group,
 	v *validator.Validator,
-	u usecase.UserUseCase,
-	o usecase.OTPUseCase,
+	uc usecase.UserUseCase,
+	oc usecase.OTPUseCase,
 ) RouteManager {
-	return &authRouteManager{g, v, u, o}
+	return &authRouteManager{g, v, uc, oc}
 }
 
 func (r *authRouteManager) PopulateRoutes() {
@@ -30,22 +30,22 @@ func (r *authRouteManager) PopulateRoutes() {
 
 func (r *authRouteManager) auth(c echo.Context) error {
 	ctx := c.Request().Context()
-	u := &types.LoginUserRequest{}
-	if err := c.Bind(u); err != nil {
+	authRequest := &types.AuthUserRequest{}
+	if err := c.Bind(authRequest); err != nil {
 		return echo.NewHTTPError(http.StatusBadRequest, err.Error())
 	}
 
-	if err := r.validator.Validate(u); err != nil {
+	if err := r.validator.Validate(authRequest); err != nil {
 		return err
 	}
 
-	token, err := r.userUseCase.PreAuthenticate(ctx, u.Phone)
+	token, err := r.userUseCase.PreAuthenticate(ctx, authRequest.Phone)
 	if err != nil {
 		return echo.NewHTTPError(http.StatusBadRequest, err.Error())
 	}
 
 	// TODO: In a future rework this
-	user, err := r.userUseCase.GetByPhone(ctx, u.Phone)
+	user, err := r.userUseCase.GetByPhone(ctx, authRequest.Phone)
 	if err != nil {
 		return err
 	}

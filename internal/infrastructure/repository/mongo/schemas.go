@@ -22,4 +22,5 @@ type OTP struct {
 	UpdatedAt time.Time          `bson:"updated_at,omitempty"`
 	ExpiredAt time.Time          `bson:"expired_at,omitempty"`
 	Code      string             `bson:"code,omitempty"`
+	IsUsed    bool               `bson:"is_used"`
 }

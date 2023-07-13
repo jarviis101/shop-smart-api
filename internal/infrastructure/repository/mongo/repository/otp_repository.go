@@ -22,7 +22,7 @@ func CreateOTPRepository(br BaseRepository, c *mongo.Collection, m mapper.OTPMap
 	return &otpRepository{br, c, m}
 }
 
-func (r *otpRepository) Store(ctx context.Context, code, owner string) (*entity.OTP, error) {
+func (r *otpRepository) Store(ctx context.Context, owner, code string) (*entity.OTP, error) {
 	ownerId, err := primitive.ObjectIDFromHex(owner)
 	if err != nil {
 		return nil, err
@@ -46,4 +46,35 @@ func (r *otpRepository) Store(ctx context.Context, code, owner string) (*entity.
 	}
 
 	return r.mapper.SchemaToEntity(otp), nil
+}
+
+func (r *otpRepository) GetByOwnerAndCode(ctx context.Context, owner, code string) (*entity.OTP, error) {
+	ownerId, err := primitive.ObjectIDFromHex(owner)
+	if err != nil {
+		return nil, err
+	}
+
+	var otp *schema.OTP
+
+	if err := r.collection.FindOne(ctx, bson.M{"owner_id": ownerId, "code": code}).Decode(&otp); err != nil {
+		return nil, err
+	}
+
+	return r.mapper.SchemaToEntity(otp), nil
+}
+
+func (r *otpRepository) UseOTP(ctx context.Context, otp *entity.OTP) error {
+	otpId, err := primitive.ObjectIDFromHex(otp.ID)
+	if err != nil {
+		return err
+	}
+
+	filter := bson.D{{"_id", otpId}}
+	update := bson.D{{"$set", bson.M{"is_used": true}}}
+
+	if _, err = r.collection.UpdateOne(ctx, filter, update); err != nil {
+		return err
+	}
+
+	return nil
 }

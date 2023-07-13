@@ -9,4 +9,5 @@ type OTP struct {
 	ID        string
 	Code      string
 	OwnerID   string
+	IsUsed    bool
 }

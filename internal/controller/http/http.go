@@ -64,7 +64,7 @@ func (h *http) appendRestRoutes(e *echo.Echo) {
 	authRouter.PopulateRoutes()
 
 	otpGroup := apiGroup.Group("/otp")
-	otpRouter := router.CreateOTPRouterManager(h.userUseCase, otpGroup, h.serverConfig)
+	otpRouter := router.CreateOTPRouterManager(otpGroup, h.validator, h.userUseCase, h.otpUseCase, h.serverConfig)
 	otpRouter.PopulateRoutes()
 }
 

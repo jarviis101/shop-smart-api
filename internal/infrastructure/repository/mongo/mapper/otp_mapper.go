@@ -25,5 +25,6 @@ func (o *otpMapper) SchemaToEntity(otp *mongo.OTP) *entity.OTP {
 		UpdatedAt: otp.UpdatedAt,
 		Code:      otp.Code,
 		OwnerID:   otp.OwnerID.Hex(),
+		IsUsed:    otp.IsUsed,
 	}
 }
