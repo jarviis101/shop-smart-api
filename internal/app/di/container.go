@@ -24,10 +24,10 @@ type container struct {
 }
 
 func CreateContainer(db *mongo.Database, sc pkg.Server) Container {
-	br := repository.CreateBaseRepository()
-	bm := mapper.CreateBaseMapper()
+	baseRepository := repository.CreateBaseRepository()
+	baseMapper := mapper.CreateBaseMapper()
 
-	return &container{br, bm, db, sc}
+	return &container{baseRepository, baseMapper, db, sc}
 }
 
 func (c *container) ProvideUserUseCase() usecase.UserUseCase {

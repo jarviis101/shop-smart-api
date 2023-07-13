@@ -7,9 +7,9 @@ import (
 )
 
 type useCase struct {
-	authService      AuthService
-	finderService    Finder
-	collectorService Collector
+	auth      AuthService
+	finder    Finder
+	collector Collector
 }
 
 func CreateUserUseCase(a AuthService, f Finder, cs Collector) usecase.UserUseCase {
@@ -17,17 +17,17 @@ func CreateUserUseCase(a AuthService, f Finder, cs Collector) usecase.UserUseCas
 }
 
 func (uc *useCase) PreAuthenticate(ctx context.Context, phone string) (string, error) {
-	return uc.authService.PreAuthenticate(ctx, phone)
+	return uc.auth.PreAuthenticate(ctx, phone)
 }
 
 func (uc *useCase) Authenticate(user *entity.User) (string, error) {
-	return uc.authService.FullAuthenticate(user)
+	return uc.auth.FullAuthenticate(user)
 }
 
 func (uc *useCase) Get(ctx context.Context, id string) (*entity.User, error) {
-	return uc.finderService.Find(ctx, id)
+	return uc.finder.Find(ctx, id)
 }
 
 func (uc *useCase) GetByPhone(ctx context.Context, phone string) (*entity.User, error) {
-	return uc.finderService.FindByPhone(ctx, phone)
+	return uc.finder.FindByPhone(ctx, phone)
 }

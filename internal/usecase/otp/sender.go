@@ -23,5 +23,6 @@ func (s *sender) SendOTP(ctx context.Context, owner *entity.User) error {
 		return err
 	}
 
+	// TODO: complete send -> need client
 	return nil
 }

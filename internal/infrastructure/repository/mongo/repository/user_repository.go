@@ -23,7 +23,6 @@ func CreateUserRepository(br BaseRepository, c *mongo.Collection, m mapper.UserM
 }
 
 func (r *userRepository) Store(ctx context.Context, phone string) (*entity.User, error) {
-	var user *schema.User
 	result, err := r.collection.InsertOne(ctx, &schema.User{
 		ID:        primitive.NewObjectID(),
 		Phone:     phone,
@@ -35,6 +34,7 @@ func (r *userRepository) Store(ctx context.Context, phone string) (*entity.User,
 		return nil, err
 	}
 
+	var user *schema.User
 	if err := r.collection.FindOne(ctx, bson.M{"_id": result.InsertedID}).Decode(&user); err != nil {
 		return nil, err
 	}

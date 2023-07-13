@@ -24,9 +24,9 @@ func CreateAuthService(r repository.UserRepository, j jwt.Manager, c Creator) Au
 
 func (s *authService) PreAuthenticate(ctx context.Context, phone string) (string, error) {
 	user, err := s.repository.GetByPhone(ctx, phone)
-	if err != nil && user == nil {
-		user, _ := s.creatorService.Create(ctx, phone)
-		return s.jwtManager.Generate(user, false)
+	if err != nil {
+		createdUser, _ := s.creatorService.Create(ctx, phone)
+		return s.jwtManager.Generate(createdUser, false)
 	}
 
 	return s.jwtManager.Generate(user, false)
