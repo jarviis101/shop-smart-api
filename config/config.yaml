@@ -4,3 +4,5 @@ database:
 server:
   port: ${APP_PORT}
   secret: ${APP_SECRET}
+  env: ${APP_ENV}
+  debug: ${APP_DEBUG}

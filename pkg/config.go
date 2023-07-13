@@ -19,6 +19,8 @@ type Database struct {
 type Server struct {
 	Port   string `yaml:"port"`
 	Secret string `yaml:"secret"`
+	Env    string `yaml:"env"`
+	Debug  string `yaml:"debug"`
 }
 
 type AppConfig struct {
