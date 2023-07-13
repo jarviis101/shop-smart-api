@@ -22,11 +22,11 @@ func CreateUserRepository(br BaseRepository, c *mongo.Collection, m mapper.UserM
 	return &userRepository{br, c, m}
 }
 
-func (r *userRepository) Store(ctx context.Context, u *entity.User) (*entity.User, error) {
+func (r *userRepository) Store(ctx context.Context, phone string) (*entity.User, error) {
 	var user *schema.User
 	result, err := r.collection.InsertOne(ctx, &schema.User{
 		ID:        primitive.NewObjectID(),
-		Phone:     u.Phone,
+		Phone:     phone,
 		CreatedAt: time.Now(),
 		UpdatedAt: time.Now(),
 	})
