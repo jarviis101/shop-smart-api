@@ -1,14 +1,17 @@
 package di
 
 import (
+	smsru "github.com/dmitriy-borisov/go-smsru"
 	"go.mongodb.org/mongo-driver/mongo"
 	"shop-smart-api/internal/infrastructure/repository/mongo/mapper"
 	"shop-smart-api/internal/infrastructure/repository/mongo/repository"
 	"shop-smart-api/internal/pkg/jwt"
+	"shop-smart-api/internal/pkg/sms"
 	"shop-smart-api/internal/usecase"
 	"shop-smart-api/internal/usecase/otp"
 	"shop-smart-api/internal/usecase/user"
 	"shop-smart-api/pkg"
+	"strconv"
 )
 
 type Container interface {
@@ -58,12 +61,15 @@ func (c *container) resolveOTPUseCaseDependencies(
 	br repository.BaseRepository,
 	bm mapper.BaseMapper,
 ) usecase.OTPUseCase {
+	debug, _ := strconv.ParseBool(c.serverConfig.Debug)
+	smsClient := sms.CreateClient(smsru.NewClient(c.serverConfig.SmsApiKey), debug)
+
 	otpGenerator := otp.CreateGenerator()
 	otpMapper := mapper.CreateOTPMapper(bm)
 	otpRepository := repository.CreateOTPRepository(br, c.database.Collection("otp"), otpMapper)
 	otpCreator := otp.CreateCreator(otpRepository, otpGenerator)
-	otpSender := otp.CreateSender(otpCreator)
-	otpValidator := otp.CreateValidator(otpRepository)
+	otpSender := otp.CreateSender(otpCreator, smsClient)
+	otpValidator := otp.CreateValidator(otpRepository, debug)
 
 	return otp.CreateOTPUseCase(otpSender, otpValidator)
 }

@@ -69,8 +69,8 @@ func (r *otpRepository) UseOTP(ctx context.Context, otp *entity.OTP) error {
 		return err
 	}
 
-	filter := bson.D{{"_id", otpId}}
-	update := bson.D{{"$set", bson.M{"is_used": true}}}
+	filter := bson.M{"_id": otpId}
+	update := bson.M{"$set": bson.M{"is_used": true}}
 
 	if _, err = r.collection.UpdateOne(ctx, filter, update); err != nil {
 		return err
