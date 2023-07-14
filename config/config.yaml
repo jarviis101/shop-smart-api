@@ -2,7 +2,7 @@ database:
   uri: ${MONGO_URI}
   name: ${DB_NAME}
 server:
-  port: ${APP_PORT}
+  port: ${PORT}
   secret: ${APP_SECRET}
   env: ${APP_ENV}
   debug: ${APP_DEBUG}
