@@ -8,31 +8,119 @@ servers:
 paths:
   /api/auth:
     post:
-      summary: Login a user
-      description: Login a user
+      summary: Pre-authenticate user
+      description: Pre-authenticate user
       tags:
         - Authentication
       requestBody:
         content:
           'application/json':
             schema:
-              $ref: './schemas/auth.yml#/Auth'
+              $ref: '#/components/schemas/PreAuthenticate'
       responses:
         '200':
-          description: User logged in
+          description: User receive not-fully token for use only OTP endpoints
           content:
             'application/json':
               schema:
-                $ref: './schemas/auth.yml#/Token'
+                $ref: '#/components/schemas/Token'
         '400':
           description: Bad request
           content:
             'application/json':
               schema:
-                $ref: './schemas/errors.yml#/BadRequest'
+                $ref: '#/components/schemas/BadRequest'
         '422':
           description: Unprocessable entity
           content:
             'application/json':
               schema:
-                $ref: './schemas/errors.yml#/UnprocessableEntity'
+                $ref: '#/components/schemas/UnprocessableEntity'
+  /api/otp/verify:
+    post:
+      summary: Verify OTP code
+      description: Verify OTP code
+      security:
+        - Bearer: []
+      tags:
+        - Authentication
+      requestBody:
+        content:
+          'application/json':
+            schema:
+              $ref: '#/components/schemas/VerifyOTP'
+      responses:
+        '200':
+          description: User receive fully token for use system
+          content:
+            'application/json':
+              schema:
+                $ref: '#/components/schemas/Token'
+        '400':
+          description: Bad request
+          content:
+            'application/json':
+              schema:
+                $ref: '#/components/schemas/BadRequest'
+  /api/otp/send:
+    post:
+      summary: Retry send OTP code
+      description: Retry send OTP code
+      security:
+        - Bearer: []
+      tags:
+        - Authentication
+      responses:
+        '201':
+          description: OTP successfully sent
+        '400':
+          description: Bad request
+          content:
+            'application/json':
+              schema:
+                $ref: '#/components/schemas/BadRequest'
+components:
+  schemas:
+    PreAuthenticate:
+      required:
+        - phone
+      type: object
+      properties:
+        phone:
+          type: string
+          description: Phone
+          example: '+380965235852'
+    VerifyOTP:
+      required:
+        - code
+      type: object
+      properties:
+        code:
+          type: string
+          description: Code
+          example: '1234'
+    Token:
+      type: object
+      properties:
+        token:
+          type: string
+          description: Token
+          example: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjYzZjkyMmUxNzU0YTY5NWFiMjAxNjk1YSIsImV4cCI6MTY3NzI4OTc4MH0.94i5ITwJ2TyW1mtVaP4KY1JMW409E6dePhiYGVR2gBg
+    BadRequest:
+      type: object
+      properties:
+        message:
+          type: string
+          description: Bad request
+          example: Bad request
+    UnprocessableEntity:
+      type: object
+      properties:
+        message:
+          type: string
+          description: Bad credentials
+          example: Bad credentials
+  securitySchemes:
+    Bearer:
+      type: http
+      scheme: bearer
