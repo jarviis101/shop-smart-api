@@ -36,6 +36,7 @@ func CreateServer(
 	e.Validator = v
 	e.Use(middleware.Logger())
 	e.Use(middleware.Recover())
+	e.Use(middleware.CORS())
 
 	baseTransformer := transformers.CreateBaseTransformer()
 	ut := transformers.CreateUserTransformer(baseTransformer)
