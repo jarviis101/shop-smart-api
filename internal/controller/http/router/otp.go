@@ -34,8 +34,19 @@ func (r *otpRouteManager) PopulateRoutes() {
 }
 
 func (r *otpRouteManager) send(c echo.Context) error {
-	_ = c.Get(middleware.CurrentUserKey).(string)
-	return c.JSON(http.StatusOK, "send")
+	ctx := c.Request().Context()
+	currentUser := c.Get(middleware.CurrentUserKey).(string)
+
+	user, err := r.userUseCase.Get(ctx, currentUser)
+	if err != nil {
+		return err
+	}
+
+	if err := r.otpUseCase.Send(ctx, user); err != nil {
+		return err
+	}
+
+	return c.JSON(http.StatusNoContent, "")
 }
 
 func (r *otpRouteManager) verify(c echo.Context) error {
