@@ -34,7 +34,7 @@ func (r *otpRouteManager) PopulateRoutes() {
 }
 
 func (r *otpRouteManager) send(c echo.Context) error {
-	_ = c.Get(middleware.Key).(string)
+	_ = c.Get(middleware.CurrentUserKey).(string)
 	return c.JSON(http.StatusOK, "send")
 }
 
@@ -49,7 +49,7 @@ func (r *otpRouteManager) verify(c echo.Context) error {
 		return err
 	}
 
-	currentUser := c.Get(middleware.Key).(string)
+	currentUser := c.Get(middleware.CurrentUserKey).(string)
 	user, err := r.userUseCase.Get(ctx, currentUser)
 	if err != nil {
 		return err

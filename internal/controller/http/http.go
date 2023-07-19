@@ -8,6 +8,7 @@ import (
 	"github.com/labstack/echo/v4"
 	"github.com/labstack/echo/v4/middleware"
 	"shop-smart-api/internal/controller"
+	http_context "shop-smart-api/internal/controller/http/context"
 	"shop-smart-api/internal/controller/http/graphql/directives"
 	"shop-smart-api/internal/controller/http/graphql/graph"
 	"shop-smart-api/internal/controller/http/graphql/transformers"
@@ -34,6 +35,7 @@ func CreateServer(
 	v := http_validator.CreateValidator(validator.New())
 	e := echo.New()
 	e.Validator = v
+	e.Use(http_context.EchoContextToContextMiddleware())
 	e.Use(middleware.Logger())
 	e.Use(middleware.Recover())
 	e.Use(middleware.CORS())

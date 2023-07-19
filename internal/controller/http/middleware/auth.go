@@ -7,26 +7,24 @@ import (
 )
 
 const (
-	header                  = "Authorization"
-	excludedStringFromToken = "Bearer "
-	Key                     = "currentUser"
+	CurrentUserKey = "currentUser"
+	header         = "Authorization"
+	excludedString = "Bearer "
 )
-
-var claims *jwt.UserClaims
 
 func OTPAuthMiddleware(secret string) echo.MiddlewareFunc {
 	return func(next echo.HandlerFunc) echo.HandlerFunc {
 		return func(c echo.Context) error {
-			claims, err := receiveClaims(c, secret)
+			verifiedClaims, err := receiveClaims(c, secret)
 			if err != nil {
 				return err
 			}
 
-			if claims.IsFully {
+			if verifiedClaims.IsFully {
 				return echo.NewHTTPError(http.StatusUnauthorized, err.Error())
 			}
 
-			c.Set(Key, claims.UserId)
+			c.Set(CurrentUserKey, verifiedClaims.UserId)
 			return next(c)
 		}
 	}
@@ -40,24 +38,14 @@ func AuthMiddleware(secret string) echo.MiddlewareFunc {
 				return err
 			}
 
-			claims = verifiedClaims
-
 			if !verifiedClaims.IsFully {
 				return echo.NewHTTPError(http.StatusUnauthorized, err.Error())
 			}
 
-			if err := next(c); err != nil {
-				return err
-			}
-
-			return nil
+			c.Set(CurrentUserKey, verifiedClaims.UserId)
+			return next(c)
 		}
 	}
-}
-
-func GetClaims() *jwt.UserClaims {
-	// TODO: provide claims must be with another way
-	return claims
 }
 
 func receiveClaims(c echo.Context, secret string) (*jwt.UserClaims, error) {
@@ -66,7 +54,7 @@ func receiveClaims(c echo.Context, secret string) (*jwt.UserClaims, error) {
 	if token == "" {
 		return nil, echo.NewHTTPError(http.StatusUnauthorized, "not authorized")
 	}
-	accessToken := token[len(excludedStringFromToken):]
+	accessToken := token[len(excludedString):]
 	verifiedClaims, err := jwtManager.Verify(accessToken)
 	if err != nil {
 		return nil, echo.NewHTTPError(http.StatusUnauthorized, err.Error())
