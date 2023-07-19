@@ -6,7 +6,10 @@ directive @auth on FIELD_DEFINITION
 
 type User {
   id: ID!
-  name: String!
+  firstName: String!
+  lastName: String!
+  middleName: String!
+  phone: String!
 }
 
 type Query {

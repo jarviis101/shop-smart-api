@@ -21,7 +21,7 @@ func OTPAuthMiddleware(secret string) echo.MiddlewareFunc {
 			}
 
 			if verifiedClaims.IsFully {
-				return echo.NewHTTPError(http.StatusUnauthorized, err.Error())
+				return echo.NewHTTPError(http.StatusUnauthorized, "access denied")
 			}
 
 			c.Set(CurrentUserKey, verifiedClaims.UserId)
@@ -39,7 +39,7 @@ func AuthMiddleware(secret string) echo.MiddlewareFunc {
 			}
 
 			if !verifiedClaims.IsFully {
-				return echo.NewHTTPError(http.StatusUnauthorized, err.Error())
+				return echo.NewHTTPError(http.StatusUnauthorized, "access denied")
 			}
 
 			c.Set(CurrentUserKey, verifiedClaims.UserId)

@@ -30,5 +30,5 @@ func (t *userTransformer) TransformManyToModel(u []*entity.User) []*model.User {
 }
 
 func (t *userTransformer) TransformToModel(u *entity.User) *model.User {
-	return &model.User{ID: u.ID}
+	return &model.User{ID: u.ID, FirstName: u.FirstName, LastName: u.LastName, MiddleName: u.MiddleName, Phone: u.Phone}
 }
