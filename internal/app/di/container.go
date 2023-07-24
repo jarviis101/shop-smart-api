@@ -53,8 +53,9 @@ func (c *container) resolveUserUseCaseDependencies(
 	userAuthService := user.CreateAuthService(userRepository, jwtManager, userCreator)
 	userFinder := user.CreateFinder(userRepository)
 	userCollector := user.CreateCollector(userRepository)
+	userModifier := user.CreateModifier(userRepository)
 
-	return user.CreateUserUseCase(userAuthService, userFinder, userCollector)
+	return user.CreateUserUseCase(userAuthService, userFinder, userCollector, userModifier)
 }
 
 func (c *container) resolveOTPUseCaseDependencies(

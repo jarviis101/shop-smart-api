@@ -67,6 +67,25 @@ func (r *userRepository) GetById(ctx context.Context, id string) (*entity.User, 
 	return r.mapper.SchemaToEntity(user), nil
 }
 
+func (r *userRepository) UpdateUser(
+	ctx context.Context,
+	userId, firstName, lastName, middleName string,
+) (*entity.User, error) {
+	objectId, err := primitive.ObjectIDFromHex(userId)
+	if err != nil {
+		return nil, err
+	}
+
+	filter := bson.M{"_id": objectId}
+	update := bson.M{"$set": bson.M{"first_name": firstName, "middle_name": middleName, "last_name": lastName}}
+
+	if _, err := r.collection.UpdateOne(ctx, filter, update); err != nil {
+		return nil, err
+	}
+
+	return r.GetById(ctx, userId)
+}
+
 //func (r *userRepository) GetByIds(ctx context.Context, ids []string) ([]*entity.User, error) {
 //	var users []*schema.User
 //	var usersEntity []*entity.User

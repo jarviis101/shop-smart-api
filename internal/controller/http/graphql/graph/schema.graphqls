@@ -16,4 +16,13 @@ type Query {
   me: User! @auth
 }
 
+input UpdateUser {
+  firstName: String!
+  lastName: String!
+  middleName: String!
+}
+
+type Mutation {
+  updatePersonalInfo(input: UpdateUser!): User! @auth
+}
 

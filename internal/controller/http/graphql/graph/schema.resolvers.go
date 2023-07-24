@@ -10,6 +10,22 @@ import (
 	"shop-smart-api/internal/controller/http/graphql/graph/model"
 )
 
+// UpdatePersonalInfo is the resolver for the updatePersonalInfo field.
+func (r *mutationResolver) UpdatePersonalInfo(ctx context.Context, input model.UpdateUser) (*model.User, error) {
+	currentUser := ctx.Value(directives.AuthKey(directives.Key)).(string)
+	user, err := r.userUseCase.Get(ctx, currentUser)
+	if err != nil {
+		return nil, err
+	}
+
+	updatedUser, err := r.userUseCase.Update(ctx, user, input.FirstName, input.LastName, input.MiddleName)
+	if err != nil {
+		return nil, err
+	}
+
+	return r.userTransformer.TransformToModel(updatedUser), nil
+}
+
 // Me is the resolver for the me field.
 func (r *queryResolver) Me(ctx context.Context) (*model.User, error) {
 	currentUser := ctx.Value(directives.AuthKey(directives.Key)).(string)
@@ -18,20 +34,14 @@ func (r *queryResolver) Me(ctx context.Context) (*model.User, error) {
 		return nil, err
 	}
 
-	m := r.userTransformer.TransformToModel(user)
-
-	return m, nil
+	return r.userTransformer.TransformToModel(user), nil
 }
+
+// Mutation returns MutationResolver implementation.
+func (r *Resolver) Mutation() MutationResolver { return &mutationResolver{r} }
 
 // Query returns QueryResolver implementation.
 func (r *Resolver) Query() QueryResolver { return &queryResolver{r} }
 
-type queryResolver struct{ *Resolver }
-
-// !!! WARNING !!!
-// The code below was going to be deleted when updating resolvers. It has been copied here so you have
-// one last chance to move it out of harms way if you want. There are two reasons this happens:
-//   - When renaming or deleting a resolver the old code will be put in here. You can safely delete
-//     it when you're done.
-//   - You have helper methods in this file. Move them out to keep these resolver files clean.
 type mutationResolver struct{ *Resolver }
+type queryResolver struct{ *Resolver }

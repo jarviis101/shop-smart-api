@@ -2,6 +2,12 @@
 
 package model
 
+type UpdateUser struct {
+	FirstName  string `json:"firstName"`
+	LastName   string `json:"lastName"`
+	MiddleName string `json:"middleName"`
+}
+
 type User struct {
 	ID         string `json:"id"`
 	FirstName  string `json:"firstName"`
