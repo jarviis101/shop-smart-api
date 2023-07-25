@@ -12,9 +12,16 @@ type (
 		Get(ctx context.Context, id string) (*entity.User, error)
 		GetByPhone(ctx context.Context, phone string) (*entity.User, error)
 		Update(ctx context.Context, user *entity.User, firstName, lastName, middleName string) (*entity.User, error)
+		Create(
+			ctx context.Context,
+			phone, firstName, lastName, middleName string,
+			roles []string,
+		) (*entity.User, error)
 	}
 	OTPUseCase interface {
 		Send(ctx context.Context, owner *entity.User) error
 		Verify(ctx context.Context, owner *entity.User, code string) error
+	}
+	OrganizationUseCase interface {
 	}
 )

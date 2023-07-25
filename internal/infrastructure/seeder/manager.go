@@ -10,7 +10,7 @@ type Seeder interface {
 }
 
 type manager struct {
-	uc usecase.UserUseCase
+	userUseCase usecase.UserUseCase
 }
 
 func CreateSeeder(uc usecase.UserUseCase) Seeder {
@@ -18,7 +18,14 @@ func CreateSeeder(uc usecase.UserUseCase) Seeder {
 }
 
 func (s *manager) Seed() error {
-
+	if err := s.seedUsers(); err != nil {
+		return err
+	}
 	log.Println("Seeding successfully complete")
+	return nil
+}
+
+func (s *manager) seedUsers() error {
+	//s.userUseCase.
 	return nil
 }

@@ -42,6 +42,34 @@ func (r *userRepository) Store(ctx context.Context, phone string) (*entity.User,
 	return r.mapper.SchemaToEntity(user), nil
 }
 
+func (r *userRepository) StoreWithData(
+	ctx context.Context,
+	phone, firstName, lastName, middleName string,
+	roles []string,
+) (*entity.User, error) {
+	result, err := r.collection.InsertOne(ctx, &schema.User{
+		ID:         primitive.NewObjectID(),
+		Phone:      phone,
+		FirstName:  firstName,
+		LastName:   lastName,
+		MiddleName: middleName,
+		Roles:      roles,
+		CreatedAt:  time.Now(),
+		UpdatedAt:  time.Now(),
+	})
+
+	if err != nil {
+		return nil, err
+	}
+
+	var user *schema.User
+	if err := r.collection.FindOne(ctx, bson.M{"_id": result.InsertedID}).Decode(&user); err != nil {
+		return nil, err
+	}
+
+	return r.mapper.SchemaToEntity(user), nil
+}
+
 func (r *userRepository) GetByPhone(ctx context.Context, phone string) (*entity.User, error) {
 	var user *schema.User
 	err := r.collection.FindOne(ctx, bson.M{"phone": phone}).Decode(&user)

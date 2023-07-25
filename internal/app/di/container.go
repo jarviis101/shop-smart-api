@@ -55,7 +55,7 @@ func (c *container) resolveUserUseCaseDependencies(
 	userCollector := user.CreateCollector(userRepository)
 	userModifier := user.CreateModifier(userRepository)
 
-	return user.CreateUserUseCase(userAuthService, userFinder, userCollector, userModifier)
+	return user.CreateUserUseCase(userAuthService, userFinder, userCollector, userModifier, userCreator)
 }
 
 func (c *container) resolveOTPUseCaseDependencies(
