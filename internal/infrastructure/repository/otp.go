@@ -14,7 +14,7 @@ func CreateOTPRepository(db *sql.DB) OTPRepository {
 	return &otpRepository{db}
 }
 
-func (r *otpRepository) Store(owner, code string) (*entity.OTP, error) {
+func (r *otpRepository) Store(owner int64, code string) (*entity.OTP, error) {
 	var otp entity.OTP
 
 	err := r.database.QueryRow(
@@ -38,7 +38,7 @@ func (r *otpRepository) Store(owner, code string) (*entity.OTP, error) {
 	return &otp, nil
 }
 
-func (r *otpRepository) GetByOwnerAndCode(owner, code string) (*entity.OTP, error) {
+func (r *otpRepository) GetByOwnerAndCode(owner int64, code string) (*entity.OTP, error) {
 	var otp entity.OTP
 
 	err := r.database.QueryRow(

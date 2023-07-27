@@ -5,7 +5,7 @@ import "time"
 type User struct {
 	CreatedAt      time.Time
 	UpdatedAt      time.Time
-	ID             string
+	ID             int64
 	FirstName      string
 	LastName       string
 	MiddleName     string

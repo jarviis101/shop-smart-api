@@ -68,7 +68,7 @@ func (r *userRepository) GetByPhone(phone string) (*entity.User, error) {
 	return &user, nil
 }
 
-func (r *userRepository) GetById(id string) (*entity.User, error) {
+func (r *userRepository) GetById(id int64) (*entity.User, error) {
 	var user entity.User
 
 	err := r.database.QueryRow(
@@ -92,7 +92,7 @@ func (r *userRepository) GetById(id string) (*entity.User, error) {
 	return &user, nil
 }
 
-func (r *userRepository) UpdateUser(id, firstName, lastName, middleName string) (*entity.User, error) {
+func (r *userRepository) UpdateUser(id int64, firstName, lastName, middleName string) (*entity.User, error) {
 	var user entity.User
 
 	err := r.database.QueryRow(

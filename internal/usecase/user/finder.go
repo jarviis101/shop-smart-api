@@ -6,7 +6,7 @@ import (
 )
 
 type Finder interface {
-	Find(id string) (*entity.User, error)
+	Find(id int64) (*entity.User, error)
 	FindByPhone(phone string) (*entity.User, error)
 }
 
@@ -18,7 +18,7 @@ func CreateFinder(repository repository.UserRepository) Finder {
 	return &finder{repository}
 }
 
-func (f *finder) Find(id string) (*entity.User, error) {
+func (f *finder) Find(id int64) (*entity.User, error) {
 	return f.repository.GetById(id)
 }
 

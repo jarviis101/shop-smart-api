@@ -29,7 +29,6 @@ func (r *authRouteManager) PopulateRoutes() {
 }
 
 func (r *authRouteManager) auth(c echo.Context) error {
-	ctx := c.Request().Context()
 	authRequest := &types.AuthUserRequest{}
 	if err := c.Bind(authRequest); err != nil {
 		return echo.NewHTTPError(http.StatusBadRequest, err.Error())
@@ -50,7 +49,7 @@ func (r *authRouteManager) auth(c echo.Context) error {
 		return err
 	}
 
-	if err := r.otpUseCase.Send(ctx, user); err != nil {
+	if err := r.otpUseCase.Send(user); err != nil {
 		return err
 	}
 

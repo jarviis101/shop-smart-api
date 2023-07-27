@@ -5,7 +5,7 @@ import "time"
 type Organization struct {
 	CreatedAt time.Time
 	UpdatedAt time.Time
-	ID        string
+	ID        int64
 	OwnerID   string
 	Name      string
 	ORGN      string

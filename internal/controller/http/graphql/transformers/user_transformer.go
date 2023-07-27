@@ -3,6 +3,7 @@ package transformers
 import (
 	"shop-smart-api/internal/controller/http/graphql/graph/model"
 	"shop-smart-api/internal/entity"
+	"strconv"
 )
 
 type UserTransformer interface {
@@ -30,5 +31,11 @@ func (t *userTransformer) TransformManyToModel(u []*entity.User) []*model.User {
 }
 
 func (t *userTransformer) TransformToModel(u *entity.User) *model.User {
-	return &model.User{ID: u.ID, FirstName: u.FirstName, LastName: u.LastName, MiddleName: u.MiddleName, Phone: u.Phone}
+	return &model.User{
+		ID:         strconv.Itoa(int(u.ID)),
+		FirstName:  u.FirstName,
+		LastName:   u.LastName,
+		MiddleName: u.MiddleName,
+		Phone:      u.Phone,
+	}
 }

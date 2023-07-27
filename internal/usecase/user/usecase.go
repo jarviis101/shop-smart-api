@@ -25,7 +25,7 @@ func (uc *useCase) Authenticate(user *entity.User) (string, error) {
 	return uc.auth.FullAuthenticate(user)
 }
 
-func (uc *useCase) Get(id string) (*entity.User, error) {
+func (uc *useCase) Get(id int64) (*entity.User, error) {
 	return uc.finder.Find(id)
 }
 

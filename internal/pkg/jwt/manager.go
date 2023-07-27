@@ -22,8 +22,8 @@ func CreateManager(secret string) Manager {
 
 type UserClaims struct {
 	jwt.RegisteredClaims
-	UserId  string `json:"user_id"`
-	IsFully bool   `json:"is_fully"`
+	UserId  int64 `json:"user_id"`
+	IsFully bool  `json:"is_fully"`
 }
 
 func (j *jwtManager) Generate(user *entity.User, isFully bool) (string, error) {

@@ -34,15 +34,14 @@ func (r *otpRouteManager) PopulateRoutes() {
 }
 
 func (r *otpRouteManager) send(c echo.Context) error {
-	ctx := c.Request().Context()
-	currentUser := c.Get(middleware.CurrentUserKey).(string)
+	currentUser := c.Get(middleware.CurrentUserKey).(int64)
 
 	user, err := r.userUseCase.Get(currentUser)
 	if err != nil {
 		return err
 	}
 
-	if err := r.otpUseCase.Send(ctx, user); err != nil {
+	if err := r.otpUseCase.Send(user); err != nil {
 		return err
 	}
 
@@ -50,8 +49,6 @@ func (r *otpRouteManager) send(c echo.Context) error {
 }
 
 func (r *otpRouteManager) verify(c echo.Context) error {
-	ctx := c.Request().Context()
-
 	verifyRequest := &types.VerifyOTPRequest{}
 	if err := c.Bind(verifyRequest); err != nil {
 		return echo.NewHTTPError(http.StatusBadRequest, err.Error())
@@ -60,13 +57,13 @@ func (r *otpRouteManager) verify(c echo.Context) error {
 		return err
 	}
 
-	currentUser := c.Get(middleware.CurrentUserKey).(string)
+	currentUser := c.Get(middleware.CurrentUserKey).(int64)
 	user, err := r.userUseCase.Get(currentUser)
 	if err != nil {
 		return err
 	}
 
-	if err := r.otpUseCase.Verify(ctx, user, verifyRequest.Code); err != nil {
+	if err := r.otpUseCase.Verify(user, verifyRequest.Code); err != nil {
 		return echo.NewHTTPError(http.StatusBadRequest, err.Error())
 	}
 

@@ -1,7 +1,6 @@
 package otp
 
 import (
-	"context"
 	"shop-smart-api/internal/entity"
 	"shop-smart-api/internal/usecase"
 )
@@ -15,10 +14,10 @@ func CreateOTPUseCase(s Sender, v Validator) usecase.OTPUseCase {
 	return &useCase{s, v}
 }
 
-func (oc *useCase) Send(ctx context.Context, owner *entity.User) error {
-	return oc.sender.SendOTP(ctx, owner)
+func (oc *useCase) Send(owner *entity.User) error {
+	return oc.sender.SendOTP(owner)
 }
 
-func (oc *useCase) Verify(ctx context.Context, owner *entity.User, code string) error {
-	return oc.validator.Validate(ctx, owner.ID, code)
+func (oc *useCase) Verify(owner *entity.User, code string) error {
+	return oc.validator.Validate(owner.ID, code)
 }
