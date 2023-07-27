@@ -17,6 +17,6 @@ type (
 	OTPRepository interface {
 		Store(owner, code string) (*entity.OTP, error)
 		GetByOwnerAndCode(owner, code string) (*entity.OTP, error)
-		UseOTP(otp *entity.OTP) error
+		Use(otp *entity.OTP) error
 	}
 )

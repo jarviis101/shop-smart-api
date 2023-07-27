@@ -2,7 +2,6 @@ package repository
 
 import (
 	"database/sql"
-	"log"
 	"shop-smart-api/internal/entity"
 	"time"
 )
@@ -19,9 +18,19 @@ func (r *otpRepository) Store(owner, code string) (*entity.OTP, error) {
 	var otp entity.OTP
 
 	err := r.database.QueryRow(
-		"INSERT INTO otp (code, owner_id, expired_at) values ($1, $2, $3) returning (*)",
+		`INSERT INTO otp (code, owner_id, expired_at) VALUES ($1, $2, $3) 
+		RETURNING id, code, is_used, owner_id, created_at, updated_at, expired_at
+		`,
 		code, owner, time.Now().Add(time.Minute*5),
-	).Scan(&otp)
+	).Scan(
+		&otp.ID,
+		&otp.Code,
+		&otp.IsUsed,
+		&otp.OwnerID,
+		&otp.CreatedAt,
+		&otp.UpdatedAt,
+		&otp.ExpiredAt,
+	)
 	if err != nil {
 		return nil, err
 	}
@@ -32,27 +41,26 @@ func (r *otpRepository) Store(owner, code string) (*entity.OTP, error) {
 func (r *otpRepository) GetByOwnerAndCode(owner, code string) (*entity.OTP, error) {
 	var otp entity.OTP
 
-	rows, err := r.database.Query(
+	err := r.database.QueryRow(
 		"SELECT * FROM otp WHERE owner_id = $1 AND code = $2",
 		owner, code,
+	).Scan(
+		&otp.ID,
+		&otp.Code,
+		&otp.IsUsed,
+		&otp.OwnerID,
+		&otp.CreatedAt,
+		&otp.UpdatedAt,
+		&otp.ExpiredAt,
 	)
 	if err != nil {
 		return nil, err
-	}
-	defer rows.Close()
-
-	for rows.Next() {
-		err := rows.Scan(&otp)
-		if err != nil {
-			log.Printf("Error: %s", err)
-			continue
-		}
 	}
 
 	return &otp, nil
 }
 
-func (r *otpRepository) UseOTP(otp *entity.OTP) error {
+func (r *otpRepository) Use(otp *entity.OTP) error {
 	if _, err := r.database.Exec("UPDATE otp SET is_used = true WHERE id = $1", otp.ID); err != nil {
 		return err
 	}

@@ -42,5 +42,5 @@ func (v *validator) Validate(ctx context.Context, owner, code string) error {
 		return errors.New("code is expired")
 	}
 
-	return v.repository.UseOTP(otp)
+	return v.repository.Use(otp)
 }
