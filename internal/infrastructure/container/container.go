@@ -1,4 +1,4 @@
-package di
+package container
 
 import (
 	"database/sql"
@@ -6,16 +6,16 @@ import (
 	"shop-smart-api/internal/infrastructure/repository"
 	"shop-smart-api/internal/pkg/jwt"
 	"shop-smart-api/internal/pkg/sms"
-	"shop-smart-api/internal/usecase"
-	"shop-smart-api/internal/usecase/otp"
-	"shop-smart-api/internal/usecase/user"
+	"shop-smart-api/internal/service"
+	"shop-smart-api/internal/service/otp"
+	"shop-smart-api/internal/service/user"
 	"shop-smart-api/pkg"
 	"strconv"
 )
 
 type Container interface {
-	ProvideUserUseCase() usecase.UserUseCase
-	ProvideOTPUseCase() usecase.OTPUseCase
+	ProvideUserUseCase() service.UserUseCase
+	ProvideOTPUseCase() service.OTPUseCase
 }
 
 type container struct {
@@ -27,15 +27,15 @@ func CreateContainer(db *sql.DB, sc pkg.Server) Container {
 	return &container{db, sc}
 }
 
-func (c *container) ProvideUserUseCase() usecase.UserUseCase {
+func (c *container) ProvideUserUseCase() service.UserUseCase {
 	return c.resolveUserUseCaseDependencies()
 }
 
-func (c *container) ProvideOTPUseCase() usecase.OTPUseCase {
+func (c *container) ProvideOTPUseCase() service.OTPUseCase {
 	return c.resolveOTPUseCaseDependencies()
 }
 
-func (c *container) resolveUserUseCaseDependencies() usecase.UserUseCase {
+func (c *container) resolveUserUseCaseDependencies() service.UserUseCase {
 	jwtManager := jwt.CreateManager(c.serverConfig.Secret)
 
 	userRepository := repository.CreateUserRepository(c.database)
@@ -48,7 +48,7 @@ func (c *container) resolveUserUseCaseDependencies() usecase.UserUseCase {
 	return user.CreateUserUseCase(userAuthService, userFinder, userCollector, userModifier, userCreator)
 }
 
-func (c *container) resolveOTPUseCaseDependencies() usecase.OTPUseCase {
+func (c *container) resolveOTPUseCaseDependencies() service.OTPUseCase {
 	debug, _ := strconv.ParseBool(c.serverConfig.Debug)
 	smsClient := sms.CreateClient(smsru.NewClient(c.serverConfig.SmsApiKey), debug)
 

@@ -2,7 +2,7 @@ package user
 
 import (
 	"shop-smart-api/internal/entity"
-	"shop-smart-api/internal/usecase"
+	"shop-smart-api/internal/service"
 )
 
 type useCase struct {
@@ -13,7 +13,7 @@ type useCase struct {
 	creator   Creator
 }
 
-func CreateUserUseCase(a AuthService, f Finder, cs Collector, m Modifier, c Creator) usecase.UserUseCase {
+func CreateUserUseCase(a AuthService, f Finder, cs Collector, m Modifier, c Creator) service.UserUseCase {
 	return &useCase{a, f, cs, m, c}
 }
 

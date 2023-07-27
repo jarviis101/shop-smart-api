@@ -1,24 +1,27 @@
 package server
 
 import (
+	"database/sql"
 	"shop-smart-api/internal/app"
-	"shop-smart-api/internal/app/di"
 	"shop-smart-api/internal/controller/http"
+	"shop-smart-api/internal/infrastructure/container"
 	"shop-smart-api/pkg"
 )
 
 type application struct {
-	container    di.Container
+	database     *sql.DB
 	serverConfig pkg.Server
 }
 
-func CreateApplication(c di.Container, sc pkg.Server) app.Application {
-	return &application{c, sc}
+func CreateApplication(db *sql.DB, sc pkg.Server) app.Application {
+	return &application{db, sc}
 }
 
 func (a *application) Run() error {
-	userUseCase := a.container.ProvideUserUseCase()
-	otpUseCase := a.container.ProvideOTPUseCase()
+	di := container.CreateContainer(a.database, a.serverConfig)
+
+	userUseCase := di.ProvideUserUseCase()
+	otpUseCase := di.ProvideOTPUseCase()
 	httpServer := http.CreateServer(a.serverConfig, userUseCase, otpUseCase)
 
 	return httpServer.RunServer()

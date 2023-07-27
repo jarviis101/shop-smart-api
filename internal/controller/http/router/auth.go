@@ -5,21 +5,21 @@ import (
 	"net/http"
 	"shop-smart-api/internal/controller/http/types"
 	"shop-smart-api/internal/controller/http/validator"
-	"shop-smart-api/internal/usecase"
+	"shop-smart-api/internal/service"
 )
 
 type authRouteManager struct {
 	group       *echo.Group
 	validator   *validator.Validator
-	userUseCase usecase.UserUseCase
-	otpUseCase  usecase.OTPUseCase
+	userUseCase service.UserUseCase
+	otpUseCase  service.OTPUseCase
 }
 
 func CreateAuthRouterManager(
 	g *echo.Group,
 	v *validator.Validator,
-	uc usecase.UserUseCase,
-	oc usecase.OTPUseCase,
+	uc service.UserUseCase,
+	oc service.OTPUseCase,
 ) RouteManager {
 	return &authRouteManager{g, v, uc, oc}
 }

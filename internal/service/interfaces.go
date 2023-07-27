@@ -1,4 +1,4 @@
-package usecase
+package service
 
 import (
 	"shop-smart-api/internal/entity"

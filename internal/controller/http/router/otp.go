@@ -6,23 +6,23 @@ import (
 	"shop-smart-api/internal/controller/http/middleware"
 	"shop-smart-api/internal/controller/http/types"
 	"shop-smart-api/internal/controller/http/validator"
-	"shop-smart-api/internal/usecase"
+	"shop-smart-api/internal/service"
 	"shop-smart-api/pkg"
 )
 
 type otpRouteManager struct {
 	group        *echo.Group
 	validator    *validator.Validator
-	userUseCase  usecase.UserUseCase
-	otpUseCase   usecase.OTPUseCase
+	userUseCase  service.UserUseCase
+	otpUseCase   service.OTPUseCase
 	serverConfig pkg.Server
 }
 
 func CreateOTPRouterManager(
 	g *echo.Group,
 	v *validator.Validator,
-	uc usecase.UserUseCase,
-	oc usecase.OTPUseCase,
+	uc service.UserUseCase,
+	oc service.OTPUseCase,
 	sc pkg.Server,
 ) RouteManager {
 	return &otpRouteManager{g, v, uc, oc, sc}

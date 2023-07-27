@@ -2,7 +2,7 @@ package otp
 
 import (
 	"shop-smart-api/internal/entity"
-	"shop-smart-api/internal/usecase"
+	"shop-smart-api/internal/service"
 )
 
 type useCase struct {
@@ -10,7 +10,7 @@ type useCase struct {
 	validator Validator
 }
 
-func CreateOTPUseCase(s Sender, v Validator) usecase.OTPUseCase {
+func CreateOTPUseCase(s Sender, v Validator) service.OTPUseCase {
 	return &useCase{s, v}
 }
 
