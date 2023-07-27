@@ -15,10 +15,10 @@ func CreateOTPRepository(db *sql.DB) OTPRepository {
 	return &otpRepository{db}
 }
 
-func (o otpRepository) Store(owner, code string) (*entity.OTP, error) {
+func (r *otpRepository) Store(owner, code string) (*entity.OTP, error) {
 	var otp entity.OTP
 
-	err := o.database.QueryRow(
+	err := r.database.QueryRow(
 		"INSERT INTO otp (code, owner_id, expired_at) values ($1, $2, $3) returning (*)",
 		code, owner, time.Now().Add(time.Minute*5),
 	).Scan(&otp)
@@ -29,10 +29,10 @@ func (o otpRepository) Store(owner, code string) (*entity.OTP, error) {
 	return &otp, nil
 }
 
-func (o otpRepository) GetByOwnerAndCode(owner, code string) (*entity.OTP, error) {
+func (r *otpRepository) GetByOwnerAndCode(owner, code string) (*entity.OTP, error) {
 	var otp entity.OTP
 
-	rows, err := o.database.Query(
+	rows, err := r.database.Query(
 		"SELECT * FROM otp WHERE owner_id = $1 AND code = $2",
 		owner, code,
 	)
@@ -52,8 +52,8 @@ func (o otpRepository) GetByOwnerAndCode(owner, code string) (*entity.OTP, error
 	return &otp, nil
 }
 
-func (o otpRepository) UseOTP(otp *entity.OTP) error {
-	if _, err := o.database.Exec("UPDATE otp SET is_used = true WHERE id = $1", otp.ID); err != nil {
+func (r *otpRepository) UseOTP(otp *entity.OTP) error {
+	if _, err := r.database.Exec("UPDATE otp SET is_used = true WHERE id = $1", otp.ID); err != nil {
 		return err
 	}
 

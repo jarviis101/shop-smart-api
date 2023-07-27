@@ -7,13 +7,12 @@ import (
 
 type (
 	UserUseCase interface {
-		PreAuthenticate(ctx context.Context, phone string) (string, error)
+		PreAuthenticate(phone string) (string, error)
 		Authenticate(user *entity.User) (string, error)
-		Get(ctx context.Context, id string) (*entity.User, error)
-		GetByPhone(ctx context.Context, phone string) (*entity.User, error)
-		Update(ctx context.Context, user *entity.User, firstName, lastName, middleName string) (*entity.User, error)
+		Get(id string) (*entity.User, error)
+		GetByPhone(phone string) (*entity.User, error)
+		Update(user *entity.User, firstName, lastName, middleName string) (*entity.User, error)
 		Create(
-			ctx context.Context,
 			phone, firstName, lastName, middleName string,
 			roles []string,
 		) (*entity.User, error)

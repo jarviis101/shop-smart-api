@@ -1,14 +1,13 @@
 package user
 
 import (
-	"context"
 	"shop-smart-api/internal/entity"
 	"shop-smart-api/internal/infrastructure/repository"
 )
 
 type Finder interface {
-	Find(ctx context.Context, id string) (*entity.User, error)
-	FindByPhone(ctx context.Context, phone string) (*entity.User, error)
+	Find(id string) (*entity.User, error)
+	FindByPhone(phone string) (*entity.User, error)
 }
 
 type finder struct {
@@ -19,10 +18,10 @@ func CreateFinder(repository repository.UserRepository) Finder {
 	return &finder{repository}
 }
 
-func (f *finder) Find(ctx context.Context, id string) (*entity.User, error) {
-	return f.repository.GetById(ctx, id)
+func (f *finder) Find(id string) (*entity.User, error) {
+	return f.repository.GetById(id)
 }
 
-func (f *finder) FindByPhone(ctx context.Context, phone string) (*entity.User, error) {
-	return f.repository.GetByPhone(ctx, phone)
+func (f *finder) FindByPhone(phone string) (*entity.User, error) {
+	return f.repository.GetByPhone(phone)
 }

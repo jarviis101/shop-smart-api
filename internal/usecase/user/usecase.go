@@ -1,7 +1,6 @@
 package user
 
 import (
-	"context"
 	"shop-smart-api/internal/entity"
 	"shop-smart-api/internal/usecase"
 )
@@ -18,34 +17,32 @@ func CreateUserUseCase(a AuthService, f Finder, cs Collector, m Modifier, c Crea
 	return &useCase{a, f, cs, m, c}
 }
 
-func (uc *useCase) PreAuthenticate(ctx context.Context, phone string) (string, error) {
-	return uc.auth.PreAuthenticate(ctx, phone)
+func (uc *useCase) PreAuthenticate(phone string) (string, error) {
+	return uc.auth.PreAuthenticate(phone)
 }
 
 func (uc *useCase) Authenticate(user *entity.User) (string, error) {
 	return uc.auth.FullAuthenticate(user)
 }
 
-func (uc *useCase) Get(ctx context.Context, id string) (*entity.User, error) {
-	return uc.finder.Find(ctx, id)
+func (uc *useCase) Get(id string) (*entity.User, error) {
+	return uc.finder.Find(id)
 }
 
-func (uc *useCase) GetByPhone(ctx context.Context, phone string) (*entity.User, error) {
-	return uc.finder.FindByPhone(ctx, phone)
+func (uc *useCase) GetByPhone(phone string) (*entity.User, error) {
+	return uc.finder.FindByPhone(phone)
 }
 
 func (uc *useCase) Update(
-	ctx context.Context,
 	user *entity.User,
 	firstName, lastName, middleName string,
 ) (*entity.User, error) {
-	return uc.modifier.UpdateUser(ctx, user, firstName, lastName, middleName)
+	return uc.modifier.UpdateUser(user, firstName, lastName, middleName)
 }
 
 func (uc *useCase) Create(
-	ctx context.Context,
 	phone, firstName, lastName, middleName string,
 	roles []string,
 ) (*entity.User, error) {
-	return uc.creator.CreateWithData(ctx, phone, firstName, lastName, middleName, roles)
+	return uc.creator.CreateWithData(phone, firstName, lastName, middleName, roles)
 }

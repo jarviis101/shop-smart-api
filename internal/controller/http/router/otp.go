@@ -37,7 +37,7 @@ func (r *otpRouteManager) send(c echo.Context) error {
 	ctx := c.Request().Context()
 	currentUser := c.Get(middleware.CurrentUserKey).(string)
 
-	user, err := r.userUseCase.Get(ctx, currentUser)
+	user, err := r.userUseCase.Get(currentUser)
 	if err != nil {
 		return err
 	}
@@ -61,7 +61,7 @@ func (r *otpRouteManager) verify(c echo.Context) error {
 	}
 
 	currentUser := c.Get(middleware.CurrentUserKey).(string)
-	user, err := r.userUseCase.Get(ctx, currentUser)
+	user, err := r.userUseCase.Get(currentUser)
 	if err != nil {
 		return err
 	}

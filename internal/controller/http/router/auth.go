@@ -39,13 +39,13 @@ func (r *authRouteManager) auth(c echo.Context) error {
 		return err
 	}
 
-	token, err := r.userUseCase.PreAuthenticate(ctx, authRequest.Phone)
+	token, err := r.userUseCase.PreAuthenticate(authRequest.Phone)
 	if err != nil {
 		return echo.NewHTTPError(http.StatusBadRequest, err.Error())
 	}
 
 	// TODO: In a future rework this
-	user, err := r.userUseCase.GetByPhone(ctx, authRequest.Phone)
+	user, err := r.userUseCase.GetByPhone(authRequest.Phone)
 	if err != nil {
 		return err
 	}

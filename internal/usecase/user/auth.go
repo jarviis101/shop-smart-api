@@ -1,14 +1,13 @@
 package user
 
 import (
-	"context"
 	"shop-smart-api/internal/entity"
 	"shop-smart-api/internal/infrastructure/repository"
 	"shop-smart-api/internal/pkg/jwt"
 )
 
 type AuthService interface {
-	PreAuthenticate(ctx context.Context, phone string) (string, error)
+	PreAuthenticate(phone string) (string, error)
 	FullAuthenticate(user *entity.User) (string, error)
 }
 
@@ -22,10 +21,10 @@ func CreateAuthService(r repository.UserRepository, j jwt.Manager, c Creator) Au
 	return &authService{r, j, c}
 }
 
-func (s *authService) PreAuthenticate(ctx context.Context, phone string) (string, error) {
-	user, err := s.repository.GetByPhone(ctx, phone)
+func (s *authService) PreAuthenticate(phone string) (string, error) {
+	user, err := s.repository.GetByPhone(phone)
 	if err != nil {
-		createdUser, _ := s.creatorService.Create(ctx, phone)
+		createdUser, _ := s.creatorService.Create(phone)
 		return s.jwtManager.Generate(createdUser, false)
 	}
 

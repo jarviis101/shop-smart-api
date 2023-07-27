@@ -13,12 +13,12 @@ import (
 // UpdatePersonalInfo is the resolver for the updatePersonalInfo field.
 func (r *mutationResolver) UpdatePersonalInfo(ctx context.Context, input model.UpdateUser) (*model.User, error) {
 	currentUser := ctx.Value(directives.AuthKey(directives.Key)).(string)
-	user, err := r.userUseCase.Get(ctx, currentUser)
+	user, err := r.userUseCase.Get(currentUser)
 	if err != nil {
 		return nil, err
 	}
 
-	updatedUser, err := r.userUseCase.Update(ctx, user, input.FirstName, input.LastName, input.MiddleName)
+	updatedUser, err := r.userUseCase.Update(user, input.FirstName, input.LastName, input.MiddleName)
 	if err != nil {
 		return nil, err
 	}
@@ -29,7 +29,7 @@ func (r *mutationResolver) UpdatePersonalInfo(ctx context.Context, input model.U
 // Me is the resolver for the me field.
 func (r *queryResolver) Me(ctx context.Context) (*model.User, error) {
 	currentUser := ctx.Value(directives.AuthKey(directives.Key)).(string)
-	user, err := r.userUseCase.Get(ctx, currentUser)
+	user, err := r.userUseCase.Get(currentUser)
 	if err != nil {
 		return nil, err
 	}

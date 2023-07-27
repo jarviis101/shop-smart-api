@@ -29,7 +29,7 @@ func (v *validator) Validate(ctx context.Context, owner, code string) error {
 		return nil
 	}
 
-	otp, err := v.repository.GetByOwnerAndCode(ctx, owner, code)
+	otp, err := v.repository.GetByOwnerAndCode(owner, code)
 	if err != nil {
 		return errors.New("code not found")
 	}
@@ -42,5 +42,5 @@ func (v *validator) Validate(ctx context.Context, owner, code string) error {
 		return errors.New("code is expired")
 	}
 
-	return v.repository.UseOTP(ctx, otp)
+	return v.repository.UseOTP(otp)
 }
