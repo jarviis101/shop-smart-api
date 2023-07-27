@@ -1,7 +1,6 @@
 package main
 
 import (
-	"context"
 	"log"
 	"shop-smart-api/internal/app/di"
 	"shop-smart-api/internal/app/server"
@@ -13,10 +12,12 @@ func main() {
 	if err != nil {
 		log.Panic(err.Error())
 	}
-
-	db := pkg.CreateDatabaseConnection(context.Background(), config.Database)
+	db, err := pkg.CreateDatabaseConnection(config.Database)
+	if err != nil {
+		log.Panic(err.Error())
+	}
 	defer func() {
-		if err := pkg.CloseConnection(db.Client()); err != nil {
+		if err := db.Close(); err != nil {
 			log.Panic(err.Error())
 		}
 	}()

@@ -1,6 +1,6 @@
 database:
-  uri: ${MONGO_URI}
-  name: ${DB_NAME}
+  url: ${DATABASE_URL}
+  name: ${POSTGRES_DB}
 server:
   port: ${PORT}
   secret: ${APP_SECRET}

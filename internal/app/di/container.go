@@ -1,10 +1,9 @@
 package di
 
 import (
+	"database/sql"
 	smsru "github.com/dmitriy-borisov/go-smsru"
-	"go.mongodb.org/mongo-driver/mongo"
-	"shop-smart-api/internal/infrastructure/repository/mongo/mapper"
-	"shop-smart-api/internal/infrastructure/repository/mongo/repository"
+	"shop-smart-api/internal/infrastructure/repository"
 	"shop-smart-api/internal/pkg/jwt"
 	"shop-smart-api/internal/pkg/sms"
 	"shop-smart-api/internal/usecase"
@@ -20,35 +19,26 @@ type Container interface {
 }
 
 type container struct {
-	baseRepository repository.BaseRepository
-	baseMapper     mapper.BaseMapper
-	database       *mongo.Database
-	serverConfig   pkg.Server
+	database     *sql.DB
+	serverConfig pkg.Server
 }
 
-func CreateContainer(db *mongo.Database, sc pkg.Server) Container {
-	baseRepository := repository.CreateBaseRepository()
-	baseMapper := mapper.CreateBaseMapper()
-
-	return &container{baseRepository, baseMapper, db, sc}
+func CreateContainer(db *sql.DB, sc pkg.Server) Container {
+	return &container{db, sc}
 }
 
 func (c *container) ProvideUserUseCase() usecase.UserUseCase {
-	return c.resolveUserUseCaseDependencies(c.baseRepository, c.baseMapper)
+	return c.resolveUserUseCaseDependencies()
 }
 
 func (c *container) ProvideOTPUseCase() usecase.OTPUseCase {
-	return c.resolveOTPUseCaseDependencies(c.baseRepository, c.baseMapper)
+	return c.resolveOTPUseCaseDependencies()
 }
 
-func (c *container) resolveUserUseCaseDependencies(
-	br repository.BaseRepository,
-	bm mapper.BaseMapper,
-) usecase.UserUseCase {
+func (c *container) resolveUserUseCaseDependencies() usecase.UserUseCase {
 	jwtManager := jwt.CreateManager(c.serverConfig.Secret)
 
-	userMapper := mapper.CreateUserMapper(bm)
-	userRepository := repository.CreateUserRepository(br, c.database.Collection("users"), userMapper)
+	userRepository := repository.CreateUserRepository(c.database)
 	userCreator := user.CreateCreator(userRepository)
 	userAuthService := user.CreateAuthService(userRepository, jwtManager, userCreator)
 	userFinder := user.CreateFinder(userRepository)
@@ -58,16 +48,12 @@ func (c *container) resolveUserUseCaseDependencies(
 	return user.CreateUserUseCase(userAuthService, userFinder, userCollector, userModifier, userCreator)
 }
 
-func (c *container) resolveOTPUseCaseDependencies(
-	br repository.BaseRepository,
-	bm mapper.BaseMapper,
-) usecase.OTPUseCase {
+func (c *container) resolveOTPUseCaseDependencies() usecase.OTPUseCase {
 	debug, _ := strconv.ParseBool(c.serverConfig.Debug)
 	smsClient := sms.CreateClient(smsru.NewClient(c.serverConfig.SmsApiKey), debug)
 
 	otpGenerator := otp.CreateGenerator()
-	otpMapper := mapper.CreateOTPMapper(bm)
-	otpRepository := repository.CreateOTPRepository(br, c.database.Collection("otp"), otpMapper)
+	otpRepository := repository.CreateOTPRepository(c.database)
 	otpCreator := otp.CreateCreator(otpRepository, otpGenerator)
 	otpSender := otp.CreateSender(otpCreator, smsClient)
 	otpValidator := otp.CreateValidator(otpRepository, debug)

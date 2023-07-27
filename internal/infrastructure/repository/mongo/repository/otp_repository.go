@@ -22,13 +22,13 @@ func CreateOTPRepository(br BaseRepository, c *mongo.Collection, m mapper.OTPMap
 	return &otpRepository{br, c, m}
 }
 
-func (r *otpRepository) Store(ctx context.Context, owner, code string) (*entity.OTP, error) {
+func (r *otpRepository) Store(owner, code string) (*entity.OTP, error) {
 	ownerId, err := primitive.ObjectIDFromHex(owner)
 	if err != nil {
 		return nil, err
 	}
 
-	result, err := r.collection.InsertOne(ctx, &schema.OTP{
+	result, err := r.collection.InsertOne(context.Background(), &schema.OTP{
 		ID:        primitive.NewObjectID(),
 		Code:      code,
 		OwnerID:   ownerId,
@@ -41,14 +41,14 @@ func (r *otpRepository) Store(ctx context.Context, owner, code string) (*entity.
 	}
 
 	var otp *schema.OTP
-	if err := r.collection.FindOne(ctx, bson.M{"_id": result.InsertedID}).Decode(&otp); err != nil {
+	if err := r.collection.FindOne(context.Background(), bson.M{"_id": result.InsertedID}).Decode(&otp); err != nil {
 		return nil, err
 	}
 
 	return r.mapper.SchemaToEntity(otp), nil
 }
 
-func (r *otpRepository) GetByOwnerAndCode(ctx context.Context, owner, code string) (*entity.OTP, error) {
+func (r *otpRepository) GetByOwnerAndCode(owner, code string) (*entity.OTP, error) {
 	ownerId, err := primitive.ObjectIDFromHex(owner)
 	if err != nil {
 		return nil, err
@@ -56,14 +56,14 @@ func (r *otpRepository) GetByOwnerAndCode(ctx context.Context, owner, code strin
 
 	var otp *schema.OTP
 
-	if err := r.collection.FindOne(ctx, bson.M{"owner_id": ownerId, "code": code}).Decode(&otp); err != nil {
+	if err := r.collection.FindOne(context.Background(), bson.M{"owner_id": ownerId, "code": code}).Decode(&otp); err != nil {
 		return nil, err
 	}
 
 	return r.mapper.SchemaToEntity(otp), nil
 }
 
-func (r *otpRepository) UseOTP(ctx context.Context, otp *entity.OTP) error {
+func (r *otpRepository) UseOTP(otp *entity.OTP) error {
 	otpId, err := primitive.ObjectIDFromHex(otp.ID)
 	if err != nil {
 		return err
@@ -72,7 +72,7 @@ func (r *otpRepository) UseOTP(ctx context.Context, otp *entity.OTP) error {
 	filter := bson.M{"_id": otpId}
 	update := bson.M{"$set": bson.M{"is_used": true}}
 
-	if _, err = r.collection.UpdateOne(ctx, filter, update); err != nil {
+	if _, err = r.collection.UpdateOne(context.Background(), filter, update); err != nil {
 		return err
 	}
 

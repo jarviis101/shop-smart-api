@@ -18,8 +18,8 @@ type (
 		UpdateUser(ctx context.Context, userId, firstName, lastName, middleName string) (*entity.User, error)
 	}
 	OTPRepository interface {
-		Store(ctx context.Context, owner, code string) (*entity.OTP, error)
-		GetByOwnerAndCode(ctx context.Context, owner, code string) (*entity.OTP, error)
-		UseOTP(ctx context.Context, otp *entity.OTP) error
+		Store(owner, code string) (*entity.OTP, error)
+		GetByOwnerAndCode(owner, code string) (*entity.OTP, error)
+		UseOTP(otp *entity.OTP) error
 	}
 )

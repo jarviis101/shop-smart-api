@@ -8,15 +8,13 @@ services:
       - "5432:5432"
     volumes:
       - postgres:/var/lib/postgresql/data
-    environment:
-      - POSTGRES_PASSWORD=password
-      - POSTGRES_USER=user
-      - POSTGRES_DB=shop-smart
     healthcheck:
       test: [ "CMD-SHELL", "pg_isready -U ${POSTGRES_USER}" ]
       interval: 5s
       timeout: 5s
       retries: 5
+    env_file:
+      - ../.env
 
   swagger:
     container_name: swagger
