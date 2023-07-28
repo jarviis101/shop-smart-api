@@ -11,5 +11,5 @@ type User struct {
 	MiddleName     string
 	Phone          string
 	Roles          []string
-	OrganizationId *int64
+	OrganizationID *int64
 }

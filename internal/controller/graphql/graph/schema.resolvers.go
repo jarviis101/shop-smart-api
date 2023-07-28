@@ -7,6 +7,7 @@ package graph
 import (
 	"context"
 	"fmt"
+	"github.com/vektah/gqlparser/v2/gqlerror"
 	"shop-smart-api/internal/controller/graphql/directives"
 	"shop-smart-api/internal/controller/graphql/graph/model"
 )
@@ -16,12 +17,12 @@ func (r *mutationResolver) UpdatePersonalInfo(ctx context.Context, input model.U
 	currentUser := ctx.Value(directives.AuthKey(directives.Key)).(int64)
 	user, err := r.userService.Get(currentUser)
 	if err != nil {
-		return nil, err
+		return nil, &gqlerror.Error{Message: "user not found"}
 	}
 
 	updatedUser, err := r.userService.Update(user, input.FirstName, input.LastName, input.MiddleName)
 	if err != nil {
-		return nil, err
+		return nil, &gqlerror.Error{Message: "something went wrong"}
 	}
 
 	return r.userTransformer.TransformToModel(updatedUser), nil
@@ -32,7 +33,7 @@ func (r *queryResolver) Me(ctx context.Context) (*model.User, error) {
 	currentUser := ctx.Value(directives.AuthKey(directives.Key)).(int64)
 	user, err := r.userService.Get(currentUser)
 	if err != nil {
-		return nil, err
+		return nil, &gqlerror.Error{Message: "user not found"}
 	}
 
 	return r.userTransformer.TransformToModel(user), nil
@@ -43,12 +44,16 @@ func (r *queryResolver) GetOrganization(ctx context.Context) (*model.Organizatio
 	currentUser := ctx.Value(directives.AuthKey(directives.Key)).(int64)
 	user, err := r.userService.Get(currentUser)
 	if err != nil {
-		return nil, err
+		return nil, &gqlerror.Error{Message: "user not found"}
 	}
 
-	organization, err := r.organizationService.Get(*user.OrganizationId)
+	if user.OrganizationID == nil {
+		return nil, &gqlerror.Error{Message: "organization not found"}
+	}
+
+	organization, err := r.organizationService.Get(*user.OrganizationID)
 	if err != nil {
-		return nil, err
+		return nil, &gqlerror.Error{Message: "organization not found"}
 	}
 
 	return r.organizationTransformer.TransformToModel(organization), nil

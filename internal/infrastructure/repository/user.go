@@ -33,7 +33,7 @@ func (r *userRepository) Store(
 		&user.Phone,
 		&user.CreatedAt,
 		&user.UpdatedAt,
-		&user.OrganizationId,
+		&user.OrganizationID,
 		pq.Array(&user.Roles),
 	)
 
@@ -58,7 +58,7 @@ func (r *userRepository) GetByPhone(phone string) (*entity.User, error) {
 		&user.Phone,
 		&user.CreatedAt,
 		&user.UpdatedAt,
-		&user.OrganizationId,
+		&user.OrganizationID,
 		pq.Array(&user.Roles),
 	)
 	if err != nil {
@@ -79,7 +79,7 @@ func (r *userRepository) Get(id int64) (*entity.User, error) {
 		&user.Phone,
 		&user.CreatedAt,
 		&user.UpdatedAt,
-		&user.OrganizationId,
+		&user.OrganizationID,
 		pq.Array(&user.Roles),
 	)
 	if err != nil {
@@ -105,7 +105,7 @@ func (r *userRepository) UpdateUser(id int64, firstName, lastName, middleName st
 		&user.Phone,
 		&user.CreatedAt,
 		&user.UpdatedAt,
-		&user.OrganizationId,
+		&user.OrganizationID,
 		pq.Array(&user.Roles),
 	)
 	if err != nil {
