@@ -1,6 +1,5 @@
 database:
   url: ${DATABASE_URL}
-  name: ${POSTGRES_DB}
 server:
   port: ${PORT}
   secret: ${APP_SECRET}

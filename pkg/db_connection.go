@@ -11,10 +11,22 @@ import (
 func CreateDatabaseConnection(cfg Database) (*sql.DB, error) {
 	db, err := sql.Open("postgres", cfg.URL)
 	driver, err := postgres.WithInstance(db, &postgres.Config{})
-	m, err := migrate.NewWithDatabaseInstance("file://migrations", "postgres", driver)
-	if err := m.Up(); err != nil {
+	if err != nil {
 		return nil, err
 	}
 
-	return db, err
+	m, err := migrate.NewWithDatabaseInstance("file://migrations", "postgres", driver)
+	if err != nil {
+		return nil, err
+	}
+
+	err = m.Up()
+	if err == migrate.ErrNoChange {
+		return db, nil
+	}
+	if err != nil {
+		return nil, err
+	}
+
+	return db, nil
 }
