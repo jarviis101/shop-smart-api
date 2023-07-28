@@ -61,7 +61,22 @@ func (r *queryResolver) GetOrganization(ctx context.Context) (*model.Organizatio
 
 // GetOrganizationUsers is the resolver for the getOrganizationUsers field.
 func (r *queryResolver) GetOrganizationUsers(ctx context.Context) ([]*model.User, error) {
-	panic(fmt.Errorf("not implemented: GetOrganizationUsers - getOrganizationUsers"))
+	currentUser := ctx.Value(directives.AuthKey(directives.Key)).(int64)
+	user, err := r.userService.Get(currentUser)
+	if err != nil {
+		return nil, &gqlerror.Error{Message: "user not found"}
+	}
+
+	if user.OrganizationID == nil {
+		return nil, &gqlerror.Error{Message: "organization not found"}
+	}
+
+	users, err := r.userService.GetByOrganization(*user.OrganizationID)
+	if err != nil {
+		return nil, &gqlerror.Error{Message: err.Error()}
+	}
+
+	return r.userTransformer.TransformManyToModel(users), nil
 }
 
 // GetTransactions is the resolver for the getTransactions field.

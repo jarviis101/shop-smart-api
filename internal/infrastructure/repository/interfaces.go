@@ -8,7 +8,7 @@ type (
 	UserRepository interface {
 		Get(id int64) (*entity.User, error)
 		GetByPhone(phone string) (*entity.User, error)
-		// GetByOrganization(id int64) ([]*entity.User, error)
+		GetByOrganization(id int64) ([]*entity.User, error)
 		Store(phone, firstName, lastName, middleName string, roles []string) (*entity.User, error)
 		UpdateUser(id int64, firstName, lastName, middleName string) (*entity.User, error)
 	}

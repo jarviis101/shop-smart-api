@@ -23,20 +23,24 @@ func CreateUserService(
 	return &userService{a, f, cs, m, c}
 }
 
-func (uc *userService) PreAuthenticate(phone string) (string, error) {
-	return uc.auth.PreAuthenticate(phone)
-}
-
-func (uc *userService) Authenticate(user *entity.User) (string, error) {
-	return uc.auth.FullAuthenticate(user)
-}
-
 func (uc *userService) Get(id int64) (*entity.User, error) {
 	return uc.finder.Find(id)
 }
 
 func (uc *userService) GetByPhone(phone string) (*entity.User, error) {
 	return uc.finder.FindByPhone(phone)
+}
+
+func (uc *userService) GetByOrganization(id int64) ([]*entity.User, error) {
+	return uc.finder.FindByOrganization(id)
+}
+
+func (uc *userService) PreAuthenticate(phone string) (string, error) {
+	return uc.auth.PreAuthenticate(phone)
+}
+
+func (uc *userService) Authenticate(user *entity.User) (string, error) {
+	return uc.auth.FullAuthenticate(user)
 }
 
 func (uc *userService) Update(
