@@ -43,8 +43,7 @@ func CreateServer(
 	e.Use(middleware.Recover())
 	e.Use(middleware.CORS())
 
-	baseTransformer := transformers.CreateBaseTransformer()
-	ut := transformers.CreateUserTransformer(baseTransformer)
+	ut := transformers.CreateUserTransformer()
 
 	return &http{
 		serverConfig:    sc,

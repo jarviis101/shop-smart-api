@@ -11,12 +11,10 @@ type UserTransformer interface {
 	TransformManyToModel(u []*entity.User) []*model.User
 }
 
-type userTransformer struct {
-	BaseTransformer
-}
+type userTransformer struct{}
 
-func CreateUserTransformer(bt BaseTransformer) UserTransformer {
-	return &userTransformer{bt}
+func CreateUserTransformer() UserTransformer {
+	return &userTransformer{}
 }
 
 func (t *userTransformer) TransformManyToModel(u []*entity.User) []*model.User {
