@@ -8,7 +8,7 @@ import (
 	"embed"
 	"errors"
 	"fmt"
-	"shop-smart-api/internal/controller/http/graphql/graph/model"
+	"shop-smart-api/internal/controller/graphql/graph/model"
 	"strconv"
 	"sync"
 	"sync/atomic"

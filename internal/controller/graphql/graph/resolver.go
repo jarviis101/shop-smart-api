@@ -1,7 +1,7 @@
 package graph
 
 import (
-	"shop-smart-api/internal/controller/http/graphql/transformers"
+	"shop-smart-api/internal/controller/graphql/transformers"
 	"shop-smart-api/internal/service"
 )
 

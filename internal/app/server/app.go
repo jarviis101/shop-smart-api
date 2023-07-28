@@ -3,7 +3,7 @@ package server
 import (
 	"database/sql"
 	"shop-smart-api/internal/app"
-	"shop-smart-api/internal/controller/http"
+	"shop-smart-api/internal/controller"
 	"shop-smart-api/internal/infrastructure/container"
 	"shop-smart-api/pkg"
 )
@@ -22,7 +22,7 @@ func (a *application) Run() error {
 
 	userUseCase := di.ProvideUserUseCase()
 	otpUseCase := di.ProvideOTPUseCase()
-	httpServer := http.CreateServer(a.serverConfig, userUseCase, otpUseCase)
+	httpServer := controller.CreateServer(a.serverConfig, userUseCase, otpUseCase)
 
 	return httpServer.RunServer()
 }

@@ -1,4 +1,4 @@
-package http
+package controller
 
 import (
 	"fmt"
@@ -7,11 +7,10 @@ import (
 	"github.com/go-playground/validator/v10"
 	"github.com/labstack/echo/v4"
 	"github.com/labstack/echo/v4/middleware"
-	"shop-smart-api/internal/controller"
+	"shop-smart-api/internal/controller/graphql/directives"
+	"shop-smart-api/internal/controller/graphql/graph"
+	"shop-smart-api/internal/controller/graphql/transformers"
 	http_context "shop-smart-api/internal/controller/http/context"
-	"shop-smart-api/internal/controller/http/graphql/directives"
-	"shop-smart-api/internal/controller/http/graphql/graph"
-	"shop-smart-api/internal/controller/http/graphql/transformers"
 	"shop-smart-api/internal/controller/http/router"
 	http_validator "shop-smart-api/internal/controller/http/validator"
 	"shop-smart-api/internal/service"
@@ -31,7 +30,7 @@ func CreateServer(
 	sc pkg.Server,
 	u service.UserUseCase,
 	o service.OTPUseCase,
-) controller.Server {
+) Server {
 	v := http_validator.CreateValidator(validator.New())
 	e := echo.New()
 	e.Validator = v

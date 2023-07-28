@@ -1,7 +1,7 @@
 package transformers
 
 import (
-	"shop-smart-api/internal/controller/http/graphql/graph/model"
+	"shop-smart-api/internal/controller/graphql/graph/model"
 	"shop-smart-api/internal/entity"
 	"strconv"
 )

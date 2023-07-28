@@ -6,8 +6,8 @@ package graph
 
 import (
 	"context"
-	"shop-smart-api/internal/controller/http/graphql/directives"
-	"shop-smart-api/internal/controller/http/graphql/graph/model"
+	"shop-smart-api/internal/controller/graphql/directives"
+	"shop-smart-api/internal/controller/graphql/graph/model"
 )
 
 // UpdatePersonalInfo is the resolver for the updatePersonalInfo field.
