@@ -1,7 +1,6 @@
 package seeder
 
 import (
-	"log"
 	"shop-smart-api/internal/service"
 )
 
@@ -21,11 +20,10 @@ func (s *manager) Seed() error {
 	if err := s.seedUsers(); err != nil {
 		return err
 	}
-	log.Println("Seeding successfully complete")
+
 	return nil
 }
 
 func (s *manager) seedUsers() error {
-	//s.userUseCase.
 	return nil
 }

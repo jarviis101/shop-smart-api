@@ -45,7 +45,7 @@ func (c *container) resolveUserUseCaseDependencies() service.UserUseCase {
 	userCollector := user.CreateCollector(userRepository)
 	userModifier := user.CreateModifier(userRepository)
 
-	return user.CreateUserUseCase(userAuthService, userFinder, userCollector, userModifier, userCreator)
+	return service.CreateUserService(userAuthService, userFinder, userCollector, userModifier, userCreator)
 }
 
 func (c *container) resolveOTPUseCaseDependencies() service.OTPUseCase {
@@ -58,5 +58,5 @@ func (c *container) resolveOTPUseCaseDependencies() service.OTPUseCase {
 	otpSender := otp.CreateSender(otpCreator, smsClient)
 	otpValidator := otp.CreateValidator(otpRepository, debug)
 
-	return otp.CreateOTPUseCase(otpSender, otpValidator)
+	return service.CreateOTPService(otpSender, otpValidator)
 }

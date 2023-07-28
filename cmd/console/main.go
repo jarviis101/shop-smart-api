@@ -9,21 +9,21 @@ import (
 func main() {
 	config, err := pkg.CreateConfig()
 	if err != nil {
-		log.Panic(err.Error())
+		log.Printf("Error: %s\n", err.Error())
 	}
 
 	db, err := pkg.CreateDatabaseConnection(config.Database)
 	if err != nil {
-		log.Panic(err.Error())
+		log.Printf("Error: %s\n", err.Error())
 	}
 	defer func() {
 		if err := db.Close(); err != nil {
-			log.Panic(err.Error())
+			log.Printf("Error: %s\n", err.Error())
 		}
 	}()
 
 	application := console.CreateApplication(db, config.Server)
 	if err := application.Run(); err != nil {
-		log.Panic(err.Error())
+		log.Printf("Error: %s\n", err.Error())
 	}
 }
