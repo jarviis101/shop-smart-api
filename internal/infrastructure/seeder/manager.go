@@ -1,7 +1,9 @@
 package seeder
 
 import (
-	"shop-smart-api/internal/service"
+	"github.com/go-faker/faker/v4"
+	"log"
+	"shop-smart-api/internal/infrastructure/repository"
 )
 
 type Seeder interface {
@@ -9,11 +11,11 @@ type Seeder interface {
 }
 
 type manager struct {
-	userUseCase service.UserService
+	userRepository repository.UserRepository
 }
 
-func CreateSeeder(uc service.UserService) Seeder {
-	return &manager{uc}
+func CreateSeeder(ur repository.UserRepository) Seeder {
+	return &manager{ur}
 }
 
 func (s *manager) Seed() error {
@@ -25,5 +27,27 @@ func (s *manager) Seed() error {
 }
 
 func (s *manager) seedUsers() error {
+	if err := s.userRepository.Truncate(); err != nil {
+		return err
+	}
+
+	for i := 0; i < 10; i++ {
+		user := User{}
+		if err := faker.FakeData(&user); err != nil {
+			return err
+		}
+
+		if _, err := s.userRepository.Store(
+			user.Phone,
+			user.FirstName,
+			user.LastName,
+			"",
+			[]string{"user"},
+		); err != nil {
+			return err
+		}
+	}
+
+	log.Println("User seeding completed")
 	return nil
 }

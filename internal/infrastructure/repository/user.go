@@ -90,6 +90,37 @@ func (r *userRepository) GetByOrganization(id int64) ([]*entity.User, error) {
 	return users, nil
 }
 
+func (r *userRepository) GetAll() ([]*entity.User, error) {
+	rows, err := r.database.Query("SELECT * FROM users")
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+
+	var users []*entity.User
+	for rows.Next() {
+		var user entity.User
+
+		if err := rows.Scan(
+			&user.ID,
+			&user.FirstName,
+			&user.LastName,
+			&user.MiddleName,
+			&user.Phone,
+			&user.CreatedAt,
+			&user.UpdatedAt,
+			&user.OrganizationID,
+			pq.Array(&user.Roles),
+		); err != nil {
+			continue
+		}
+
+		users = append(users, &user)
+	}
+
+	return users, nil
+}
+
 func (r *userRepository) Store(
 	phone, firstName, lastName, middleName string,
 	roles []string,
@@ -144,4 +175,12 @@ func (r *userRepository) UpdateUser(id int64, firstName, lastName, middleName st
 	}
 
 	return &user, nil
+}
+
+func (r *userRepository) Truncate() error {
+	if _, err := r.database.Exec("TRUNCATE TABLE users CASCADE"); err != nil {
+		return err
+	}
+
+	return nil
 }

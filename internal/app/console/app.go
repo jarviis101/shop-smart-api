@@ -3,7 +3,7 @@ package console
 import (
 	"database/sql"
 	"shop-smart-api/internal/app"
-	di "shop-smart-api/internal/infrastructure/container"
+	"shop-smart-api/internal/infrastructure/repository"
 	"shop-smart-api/internal/infrastructure/seeder"
 	"shop-smart-api/pkg"
 )
@@ -18,10 +18,8 @@ func CreateApplication(db *sql.DB, sc pkg.Server) app.Application {
 }
 
 func (a *application) Run() error {
-	container := di.CreateContainer(a.database, a.serverConfig)
+	userRepository := repository.CreateUserRepository(a.database)
 
-	userUseCase := container.ProvideUserService()
-
-	manager := seeder.CreateSeeder(userUseCase)
+	manager := seeder.CreateSeeder(userRepository)
 	return manager.Seed()
 }

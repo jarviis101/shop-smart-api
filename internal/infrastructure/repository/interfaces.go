@@ -9,8 +9,10 @@ type (
 		Get(id int64) (*entity.User, error)
 		GetByPhone(phone string) (*entity.User, error)
 		GetByOrganization(id int64) ([]*entity.User, error)
+		GetAll() ([]*entity.User, error)
 		Store(phone, firstName, lastName, middleName string, roles []string) (*entity.User, error)
 		UpdateUser(id int64, firstName, lastName, middleName string) (*entity.User, error)
+		Truncate() error
 	}
 	OTPRepository interface {
 		GetByOwnerAndCode(owner int64, code string) (*entity.OTP, error)
