@@ -2,6 +2,21 @@
 
 package model
 
+type Organization struct {
+	ID        string `json:"id"`
+	Name      string `json:"name"`
+	Orgn      string `json:"orgn"`
+	Kpp       string `json:"kpp"`
+	Inn       string `json:"inn"`
+	OwnerID   string `json:"ownerId"`
+	CreatedAt string `json:"createdAt"`
+	UpdatedAt string `json:"updatedAt"`
+}
+
+type Transaction struct {
+	ID string `json:"id"`
+}
+
 type UpdateUser struct {
 	FirstName  string `json:"firstName"`
 	LastName   string `json:"lastName"`
@@ -9,9 +24,13 @@ type UpdateUser struct {
 }
 
 type User struct {
-	ID         string `json:"id"`
-	FirstName  string `json:"firstName"`
-	LastName   string `json:"lastName"`
-	MiddleName string `json:"middleName"`
-	Phone      string `json:"phone"`
+	ID             string    `json:"id"`
+	FirstName      *string   `json:"firstName,omitempty"`
+	LastName       *string   `json:"lastName,omitempty"`
+	MiddleName     *string   `json:"middleName,omitempty"`
+	Phone          string    `json:"phone"`
+	Roles          []*string `json:"roles"`
+	OrganizationID string    `json:"organizationId"`
+	CreatedAt      string    `json:"createdAt"`
+	UpdatedAt      string    `json:"updatedAt"`
 }

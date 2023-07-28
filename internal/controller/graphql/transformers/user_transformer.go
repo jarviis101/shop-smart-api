@@ -33,9 +33,9 @@ func (t *userTransformer) TransformManyToModel(u []*entity.User) []*model.User {
 func (t *userTransformer) TransformToModel(u *entity.User) *model.User {
 	return &model.User{
 		ID:         strconv.Itoa(int(u.ID)),
-		FirstName:  u.FirstName,
-		LastName:   u.LastName,
-		MiddleName: u.MiddleName,
+		FirstName:  &u.FirstName,
+		LastName:   &u.LastName,
+		MiddleName: &u.MiddleName,
 		Phone:      u.Phone,
 	}
 }

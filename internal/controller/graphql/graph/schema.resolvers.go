@@ -6,6 +6,7 @@ package graph
 
 import (
 	"context"
+	"fmt"
 	"shop-smart-api/internal/controller/graphql/directives"
 	"shop-smart-api/internal/controller/graphql/graph/model"
 )
@@ -35,6 +36,21 @@ func (r *queryResolver) Me(ctx context.Context) (*model.User, error) {
 	}
 
 	return r.userTransformer.TransformToModel(user), nil
+}
+
+// GetOrganization is the resolver for the getOrganization field.
+func (r *queryResolver) GetOrganization(ctx context.Context) (*model.Organization, error) {
+	panic(fmt.Errorf("not implemented: GetOrganization - getOrganization"))
+}
+
+// GetOrganizationUsers is the resolver for the getOrganizationUsers field.
+func (r *queryResolver) GetOrganizationUsers(ctx context.Context) ([]*model.User, error) {
+	panic(fmt.Errorf("not implemented: GetOrganizationUsers - getOrganizationUsers"))
+}
+
+// GetTransactions is the resolver for the getTransactions field.
+func (r *queryResolver) GetTransactions(ctx context.Context) ([]*model.Transaction, error) {
+	panic(fmt.Errorf("not implemented: GetTransactions - getTransactions"))
 }
 
 // Mutation returns MutationResolver implementation.
