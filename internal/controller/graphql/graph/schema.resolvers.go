@@ -6,7 +6,6 @@ package graph
 
 import (
 	"context"
-	"fmt"
 	"github.com/vektah/gqlparser/v2/gqlerror"
 	"shop-smart-api/internal/controller/graphql/directives"
 	"shop-smart-api/internal/controller/graphql/graph/model"
@@ -15,10 +14,7 @@ import (
 // UpdatePersonalInfo is the resolver for the updatePersonalInfo field.
 func (r *mutationResolver) UpdatePersonalInfo(ctx context.Context, input model.UpdateUser) (*model.User, error) {
 	currentUser := ctx.Value(directives.AuthKey(directives.Key)).(int64)
-	user, err := r.userService.Get(currentUser)
-	if err != nil {
-		return nil, &gqlerror.Error{Message: "user not found"}
-	}
+	user, _ := r.userService.Get(currentUser)
 
 	updatedUser, err := r.userService.Update(user, input.FirstName, input.LastName, input.MiddleName)
 	if err != nil {
@@ -31,10 +27,7 @@ func (r *mutationResolver) UpdatePersonalInfo(ctx context.Context, input model.U
 // Me is the resolver for the me field.
 func (r *queryResolver) Me(ctx context.Context) (*model.User, error) {
 	currentUser := ctx.Value(directives.AuthKey(directives.Key)).(int64)
-	user, err := r.userService.Get(currentUser)
-	if err != nil {
-		return nil, &gqlerror.Error{Message: "user not found"}
-	}
+	user, _ := r.userService.Get(currentUser)
 
 	return r.userTransformer.TransformToModel(user), nil
 }
@@ -42,10 +35,7 @@ func (r *queryResolver) Me(ctx context.Context) (*model.User, error) {
 // GetOrganization is the resolver for the getOrganization field.
 func (r *queryResolver) GetOrganization(ctx context.Context) (*model.Organization, error) {
 	currentUser := ctx.Value(directives.AuthKey(directives.Key)).(int64)
-	user, err := r.userService.Get(currentUser)
-	if err != nil {
-		return nil, &gqlerror.Error{Message: "user not found"}
-	}
+	user, _ := r.userService.Get(currentUser)
 
 	if user.OrganizationID == nil {
 		return nil, &gqlerror.Error{Message: "organization not found"}
@@ -62,10 +52,7 @@ func (r *queryResolver) GetOrganization(ctx context.Context) (*model.Organizatio
 // GetOrganizationUsers is the resolver for the getOrganizationUsers field.
 func (r *queryResolver) GetOrganizationUsers(ctx context.Context) ([]*model.User, error) {
 	currentUser := ctx.Value(directives.AuthKey(directives.Key)).(int64)
-	user, err := r.userService.Get(currentUser)
-	if err != nil {
-		return nil, &gqlerror.Error{Message: "user not found"}
-	}
+	user, _ := r.userService.Get(currentUser)
 
 	if user.OrganizationID == nil {
 		return nil, &gqlerror.Error{Message: "organization not found"}
@@ -81,7 +68,15 @@ func (r *queryResolver) GetOrganizationUsers(ctx context.Context) ([]*model.User
 
 // GetTransactions is the resolver for the getTransactions field.
 func (r *queryResolver) GetTransactions(ctx context.Context) ([]*model.Transaction, error) {
-	panic(fmt.Errorf("not implemented: GetTransactions - getTransactions"))
+	currentUser := ctx.Value(directives.AuthKey(directives.Key)).(int64)
+	user, _ := r.userService.Get(currentUser)
+
+	transactions, err := r.transactionService.GetTransactions(user)
+	if err != nil {
+		return nil, err
+	}
+
+	return r.transactionTransformer.TransformManyToModel(transactions), nil
 }
 
 // Mutation returns MutationResolver implementation.

@@ -23,8 +23,15 @@ func (a *application) Run() error {
 	userService := container.ProvideUserService()
 	otpService := container.ProvideOTPService()
 	organizationService := container.ProvideOrganizationService()
+	transactionService := container.ProvideTransactionService()
 
-	httpServer := controller.CreateServer(a.serverConfig, otpService, userService, organizationService)
+	httpServer := controller.CreateServer(
+		a.serverConfig,
+		otpService,
+		userService,
+		organizationService,
+		transactionService,
+	)
 
 	return httpServer.RunServer()
 }

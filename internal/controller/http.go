@@ -27,6 +27,8 @@ type http struct {
 	userTransformer         transformers.UserTransformer
 	organizationService     service.OrganizationService
 	organizationTransformer transformers.OrganizationTransformer
+	transactionService      service.TransactionService
+	transactionTransformer  transformers.TransactionTransformer
 	serverConfig            pkg.Server
 	validator               *http_validator.Validator
 	echo                    *echo.Echo
@@ -37,6 +39,7 @@ func CreateServer(
 	ots service.OTPService,
 	us service.UserService,
 	ogs service.OrganizationService,
+	ts service.TransactionService,
 ) Server {
 	v := http_validator.CreateValidator(validator.New())
 	e := echo.New()
@@ -48,6 +51,7 @@ func CreateServer(
 
 	ut := transformers.CreateUserTransformer()
 	ot := transformers.CreateOrganizationTransformer()
+	tt := transformers.CreateTransactionTransformer()
 
 	return &http{
 		otpService:              ots,
@@ -55,6 +59,8 @@ func CreateServer(
 		userTransformer:         ut,
 		organizationService:     ogs,
 		organizationTransformer: ot,
+		transactionService:      ts,
+		transactionTransformer:  tt,
 		serverConfig:            sc,
 		validator:               v,
 		echo:                    e,
@@ -85,6 +91,8 @@ func (h *http) appendGraphqlRoutes(e *echo.Echo) {
 		h.userTransformer,
 		h.organizationService,
 		h.organizationTransformer,
+		h.transactionService,
+		h.transactionTransformer,
 	)
 	c := graph.Config{Resolvers: resolver}
 	c.Directives.Auth = directives.Auth

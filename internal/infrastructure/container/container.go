@@ -9,6 +9,7 @@ import (
 	"shop-smart-api/internal/service"
 	"shop-smart-api/internal/service/organization"
 	"shop-smart-api/internal/service/otp"
+	"shop-smart-api/internal/service/transaction"
 	"shop-smart-api/internal/service/user"
 	"shop-smart-api/pkg"
 	"strconv"
@@ -18,6 +19,7 @@ type Container interface {
 	ProvideUserService() service.UserService
 	ProvideOTPService() service.OTPService
 	ProvideOrganizationService() service.OrganizationService
+	ProvideTransactionService() service.TransactionService
 }
 
 type container struct {
@@ -39,6 +41,10 @@ func (c *container) ProvideOTPService() service.OTPService {
 
 func (c *container) ProvideOrganizationService() service.OrganizationService {
 	return c.resolveOrganizationServiceDependencies()
+}
+
+func (c *container) ProvideTransactionService() service.TransactionService {
+	return c.resolveTransactionServiceDependencies()
 }
 
 func (c *container) resolveUserServiceDependencies() service.UserService {
@@ -72,4 +78,11 @@ func (c *container) resolveOrganizationServiceDependencies() service.Organizatio
 	organizationFinder := organization.CreateFinder(organizationRepository)
 
 	return service.CreateOrganizationService(organizationFinder)
+}
+
+func (c *container) resolveTransactionServiceDependencies() service.TransactionService {
+	transactionRepository := repository.CreateTransactionRepository(c.database)
+	transactionFinder := transaction.CreateFinder(transactionRepository)
+
+	return service.CreateTransactionService(transactionFinder)
 }

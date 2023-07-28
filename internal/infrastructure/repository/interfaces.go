@@ -20,4 +20,7 @@ type (
 	OrganizationRepository interface {
 		Get(id int64) (*entity.Organization, error)
 	}
+	TransactionRepository interface {
+		GetByOwner(owner int64) ([]*entity.Transaction, error)
+	}
 )
