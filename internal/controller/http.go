@@ -17,6 +17,10 @@ import (
 	"shop-smart-api/pkg"
 )
 
+type Server interface {
+	RunServer() error
+}
+
 type http struct {
 	serverConfig    pkg.Server
 	userUseCase     service.UserUseCase
