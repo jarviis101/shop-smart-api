@@ -1,7 +1,6 @@
 package otp
 
 import (
-	"context"
 	"errors"
 	"shop-smart-api/internal/infrastructure/repository"
 	"time"
@@ -12,7 +11,7 @@ const (
 )
 
 type Validator interface {
-	Validate(ctx context.Context, owner, code string) error
+	Validate(owner int64, code string) error
 }
 
 type validator struct {
@@ -24,12 +23,12 @@ func CreateValidator(r repository.OTPRepository, d bool) Validator {
 	return &validator{r, d}
 }
 
-func (v *validator) Validate(ctx context.Context, owner, code string) error {
+func (v *validator) Validate(owner int64, code string) error {
 	if v.isDebug && code == devOTP {
 		return nil
 	}
 
-	otp, err := v.repository.GetByOwnerAndCode(ctx, owner, code)
+	otp, err := v.repository.GetByOwnerAndCode(owner, code)
 	if err != nil {
 		return errors.New("code not found")
 	}
@@ -42,5 +41,5 @@ func (v *validator) Validate(ctx context.Context, owner, code string) error {
 		return errors.New("code is expired")
 	}
 
-	return v.repository.UseOTP(ctx, otp)
+	return v.repository.Use(otp)
 }

@@ -12,8 +12,7 @@ const (
 )
 
 type Database struct {
-	Uri  string `yaml:"uri"`
-	Name string `yaml:"name"`
+	URL string `yaml:"url"`
 }
 
 type Server struct {

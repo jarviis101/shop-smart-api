@@ -18,7 +18,7 @@ func Auth(ctx context.Context, obj interface{}, next graphql.Resolver) (interfac
 		return nil, err
 	}
 
-	currentUser, ok := echoContext.Get(middleware.CurrentUserKey).(string)
+	currentUser, ok := echoContext.Get(middleware.CurrentUserKey).(int64)
 	if !ok {
 		return nil, &gqlerror.Error{Message: "Access Denied"}
 	}

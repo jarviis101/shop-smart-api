@@ -1,8 +1,7 @@
 package seeder
 
 import (
-	"log"
-	"shop-smart-api/internal/usecase"
+	"shop-smart-api/internal/service"
 )
 
 type Seeder interface {
@@ -10,10 +9,10 @@ type Seeder interface {
 }
 
 type manager struct {
-	userUseCase usecase.UserUseCase
+	userUseCase service.UserUseCase
 }
 
-func CreateSeeder(uc usecase.UserUseCase) Seeder {
+func CreateSeeder(uc service.UserUseCase) Seeder {
 	return &manager{uc}
 }
 
@@ -21,11 +20,10 @@ func (s *manager) Seed() error {
 	if err := s.seedUsers(); err != nil {
 		return err
 	}
-	log.Println("Seeding successfully complete")
+
 	return nil
 }
 
 func (s *manager) seedUsers() error {
-	//s.userUseCase.
 	return nil
 }

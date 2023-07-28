@@ -5,21 +5,21 @@ import (
 	"net/http"
 	"shop-smart-api/internal/controller/http/types"
 	"shop-smart-api/internal/controller/http/validator"
-	"shop-smart-api/internal/usecase"
+	"shop-smart-api/internal/service"
 )
 
 type authRouteManager struct {
 	group       *echo.Group
 	validator   *validator.Validator
-	userUseCase usecase.UserUseCase
-	otpUseCase  usecase.OTPUseCase
+	userUseCase service.UserUseCase
+	otpUseCase  service.OTPUseCase
 }
 
 func CreateAuthRouterManager(
 	g *echo.Group,
 	v *validator.Validator,
-	uc usecase.UserUseCase,
-	oc usecase.OTPUseCase,
+	uc service.UserUseCase,
+	oc service.OTPUseCase,
 ) RouteManager {
 	return &authRouteManager{g, v, uc, oc}
 }
@@ -29,7 +29,6 @@ func (r *authRouteManager) PopulateRoutes() {
 }
 
 func (r *authRouteManager) auth(c echo.Context) error {
-	ctx := c.Request().Context()
 	authRequest := &types.AuthUserRequest{}
 	if err := c.Bind(authRequest); err != nil {
 		return echo.NewHTTPError(http.StatusBadRequest, err.Error())
@@ -39,18 +38,18 @@ func (r *authRouteManager) auth(c echo.Context) error {
 		return err
 	}
 
-	token, err := r.userUseCase.PreAuthenticate(ctx, authRequest.Phone)
+	token, err := r.userUseCase.PreAuthenticate(authRequest.Phone)
 	if err != nil {
 		return echo.NewHTTPError(http.StatusBadRequest, err.Error())
 	}
 
 	// TODO: In a future rework this
-	user, err := r.userUseCase.GetByPhone(ctx, authRequest.Phone)
+	user, err := r.userUseCase.GetByPhone(authRequest.Phone)
 	if err != nil {
 		return err
 	}
 
-	if err := r.otpUseCase.Send(ctx, user); err != nil {
+	if err := r.otpUseCase.Send(user); err != nil {
 		return err
 	}
 

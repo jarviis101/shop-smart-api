@@ -1,43 +1,36 @@
 package pkg
 
 import (
-	"context"
-	"go.mongodb.org/mongo-driver/mongo"
-	"go.mongodb.org/mongo-driver/mongo/options"
-	"log"
+	"database/sql"
+	"github.com/golang-migrate/migrate/v4"
+	"github.com/golang-migrate/migrate/v4/database/postgres"
+	_ "github.com/golang-migrate/migrate/v4/source/file"
+	_ "github.com/lib/pq"
 )
 
-type database struct {
-	client *mongo.Client
-}
-
-func CreateDatabaseConnection(ctx context.Context, cfg Database) *mongo.Database {
-	db := database{}
-	return db.openConnection(ctx, cfg)
-}
-
-func CloseConnection(client *mongo.Client) error {
-	return client.Disconnect(context.Background())
-}
-
-func (d *database) openConnection(ctx context.Context, cfg Database) *mongo.Database {
-	d.resolveClient(ctx, cfg)
-	return d.client.Database(cfg.Name)
-}
-
-func (d *database) resolveClient(ctx context.Context, cfg Database) {
-	if d.client != nil {
-		return
-	}
-	opts := options.Client().ApplyURI(cfg.Uri)
-	c, err := mongo.Connect(ctx, opts)
+func CreateDatabaseConnection(cfg Database) (*sql.DB, error) {
+	db, err := sql.Open("postgres", cfg.URL)
 	if err != nil {
-		log.Fatalln(err.Error())
+		return nil, err
 	}
 
-	if err := c.Ping(ctx, nil); err != nil {
-		log.Fatalln(err.Error())
+	driver, err := postgres.WithInstance(db, &postgres.Config{})
+	if err != nil {
+		return nil, err
 	}
 
-	d.client = c
+	m, err := migrate.NewWithDatabaseInstance("file://migrations", "postgres", driver)
+	if err != nil {
+		return nil, err
+	}
+
+	err = m.Up()
+	if err == migrate.ErrNoChange {
+		return db, nil
+	}
+	if err != nil {
+		return nil, err
+	}
+
+	return db, nil
 }

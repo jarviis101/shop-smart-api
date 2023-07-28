@@ -1,25 +1,22 @@
 package repository
 
 import (
-	"context"
 	"shop-smart-api/internal/entity"
 )
 
 type (
 	UserRepository interface {
-		Store(ctx context.Context, phone string) (*entity.User, error)
-		StoreWithData(
-			ctx context.Context,
+		Store(
 			phone, firstName, lastName, middleName string,
 			roles []string,
 		) (*entity.User, error)
-		GetByPhone(ctx context.Context, phone string) (*entity.User, error)
-		GetById(ctx context.Context, id string) (*entity.User, error)
-		UpdateUser(ctx context.Context, userId, firstName, lastName, middleName string) (*entity.User, error)
+		GetByPhone(phone string) (*entity.User, error)
+		GetById(id int64) (*entity.User, error)
+		UpdateUser(id int64, firstName, lastName, middleName string) (*entity.User, error)
 	}
 	OTPRepository interface {
-		Store(ctx context.Context, owner, code string) (*entity.OTP, error)
-		GetByOwnerAndCode(ctx context.Context, owner, code string) (*entity.OTP, error)
-		UseOTP(ctx context.Context, otp *entity.OTP) error
+		Store(owner int64, code string) (*entity.OTP, error)
+		GetByOwnerAndCode(owner int64, code string) (*entity.OTP, error)
+		Use(otp *entity.OTP) error
 	}
 )

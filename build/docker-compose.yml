@@ -2,17 +2,19 @@ version: '3.8'
 
 services:
   database:
-    image: mongo:5.0
-    container_name: database
-    environment:
-      - MONGO_INITDB_ROOT_USERNAME=root
-      - MONGO_INITDB_ROOT_PASSWORD=s3cr3t
-      - MONGO_INITDB_DATABASE=shop-smart
+    image: postgres:15
+    restart: always
     ports:
-      - "27017:27017"
+      - "5432:5432"
     volumes:
-      - mongodb:/data/db
-      - ./mongo/mongo-init.js:/docker-entrypoint-initdb.d/mongo-init.js:ro
+      - postgres:/var/lib/postgresql/data
+    healthcheck:
+      test: [ "CMD-SHELL", "pg_isready -U ${POSTGRES_USER}" ]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+    env_file:
+      - ../.env
 
   swagger:
     container_name: swagger
@@ -28,3 +30,4 @@ services:
 
 volumes:
   mongodb:
+  postgres:

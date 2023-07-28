@@ -14,14 +14,14 @@ import (
 	"shop-smart-api/internal/controller/http/graphql/transformers"
 	"shop-smart-api/internal/controller/http/router"
 	http_validator "shop-smart-api/internal/controller/http/validator"
-	"shop-smart-api/internal/usecase"
+	"shop-smart-api/internal/service"
 	"shop-smart-api/pkg"
 )
 
 type http struct {
 	serverConfig    pkg.Server
-	userUseCase     usecase.UserUseCase
-	otpUseCase      usecase.OTPUseCase
+	userUseCase     service.UserUseCase
+	otpUseCase      service.OTPUseCase
 	userTransformer transformers.UserTransformer
 	validator       *http_validator.Validator
 	echo            *echo.Echo
@@ -29,8 +29,8 @@ type http struct {
 
 func CreateServer(
 	sc pkg.Server,
-	u usecase.UserUseCase,
-	o usecase.OTPUseCase,
+	u service.UserUseCase,
+	o service.OTPUseCase,
 ) controller.Server {
 	v := http_validator.CreateValidator(validator.New())
 	e := echo.New()

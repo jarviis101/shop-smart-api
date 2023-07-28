@@ -1,9 +1,7 @@
 package main
 
 import (
-	"context"
 	"log"
-	"shop-smart-api/internal/app/di"
 	"shop-smart-api/internal/app/server"
 	"shop-smart-api/pkg"
 )
@@ -11,19 +9,21 @@ import (
 func main() {
 	config, err := pkg.CreateConfig()
 	if err != nil {
-		log.Panic(err.Error())
+		log.Printf("Error: %s\n", err.Error())
 	}
 
-	db := pkg.CreateDatabaseConnection(context.Background(), config.Database)
+	db, err := pkg.CreateDatabaseConnection(config.Database)
+	if err != nil {
+		log.Printf("Error: %s\n", err.Error())
+	}
 	defer func() {
-		if err := pkg.CloseConnection(db.Client()); err != nil {
-			log.Panic(err.Error())
+		if err := db.Close(); err != nil {
+			log.Printf("Error: %s\n", err.Error())
 		}
 	}()
 
-	container := di.CreateContainer(db, config.Server)
-	application := server.CreateApplication(container, config.Server)
+	application := server.CreateApplication(db, config.Server)
 	if err := application.Run(); err != nil {
-		log.Panic(err.Error())
+		log.Printf("Error: %s\n", err.Error())
 	}
 }
