@@ -8,6 +8,6 @@ type OTP struct {
 	ExpiredAt time.Time
 	ID        int64
 	Code      string
-	OwnerID   string
+	OwnerID   int64
 	IsUsed    bool
 }

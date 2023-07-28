@@ -4,7 +4,7 @@ import (
 	"database/sql"
 	"shop-smart-api/internal/app"
 	"shop-smart-api/internal/controller"
-	"shop-smart-api/internal/infrastructure/container"
+	di "shop-smart-api/internal/infrastructure/container"
 	"shop-smart-api/pkg"
 )
 
@@ -18,11 +18,13 @@ func CreateApplication(db *sql.DB, sc pkg.Server) app.Application {
 }
 
 func (a *application) Run() error {
-	di := container.CreateContainer(a.database, a.serverConfig)
+	container := di.CreateContainer(a.database, a.serverConfig)
 
-	userUseCase := di.ProvideUserUseCase()
-	otpUseCase := di.ProvideOTPUseCase()
-	httpServer := controller.CreateServer(a.serverConfig, userUseCase, otpUseCase)
+	userService := container.ProvideUserService()
+	otpService := container.ProvideOTPService()
+	organizationService := container.ProvideOrganizationService()
+
+	httpServer := controller.CreateServer(a.serverConfig, otpService, userService, organizationService)
 
 	return httpServer.RunServer()
 }

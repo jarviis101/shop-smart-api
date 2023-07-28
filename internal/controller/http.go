@@ -22,18 +22,21 @@ type Server interface {
 }
 
 type http struct {
-	serverConfig    pkg.Server
-	userUseCase     service.UserUseCase
-	otpUseCase      service.OTPUseCase
-	userTransformer transformers.UserTransformer
-	validator       *http_validator.Validator
-	echo            *echo.Echo
+	otpService              service.OTPService
+	userService             service.UserService
+	userTransformer         transformers.UserTransformer
+	organizationService     service.OrganizationService
+	organizationTransformer transformers.OrganizationTransformer
+	serverConfig            pkg.Server
+	validator               *http_validator.Validator
+	echo                    *echo.Echo
 }
 
 func CreateServer(
 	sc pkg.Server,
-	u service.UserUseCase,
-	o service.OTPUseCase,
+	ots service.OTPService,
+	us service.UserService,
+	ogs service.OrganizationService,
 ) Server {
 	v := http_validator.CreateValidator(validator.New())
 	e := echo.New()
@@ -44,14 +47,17 @@ func CreateServer(
 	e.Use(middleware.CORS())
 
 	ut := transformers.CreateUserTransformer()
+	ot := transformers.CreateOrganizationTransformer()
 
 	return &http{
-		serverConfig:    sc,
-		userUseCase:     u,
-		otpUseCase:      o,
-		userTransformer: ut,
-		validator:       v,
-		echo:            e,
+		otpService:              ots,
+		userService:             us,
+		userTransformer:         ut,
+		organizationService:     ogs,
+		organizationTransformer: ot,
+		serverConfig:            sc,
+		validator:               v,
+		echo:                    e,
 	}
 }
 
@@ -65,16 +71,21 @@ func (h *http) RunServer() error {
 
 func (h *http) appendRestRoutes(e *echo.Echo) {
 	apiGroup := e.Group("/api")
-	authRouter := router.CreateAuthRouterManager(apiGroup, h.validator, h.userUseCase, h.otpUseCase)
+	authRouter := router.CreateAuthRouterManager(apiGroup, h.validator, h.userService, h.otpService)
 	authRouter.PopulateRoutes()
 
 	otpGroup := apiGroup.Group("/otp")
-	otpRouter := router.CreateOTPRouterManager(otpGroup, h.validator, h.userUseCase, h.otpUseCase, h.serverConfig)
+	otpRouter := router.CreateOTPRouterManager(otpGroup, h.validator, h.userService, h.otpService, h.serverConfig)
 	otpRouter.PopulateRoutes()
 }
 
 func (h *http) appendGraphqlRoutes(e *echo.Echo) {
-	resolver := graph.CreateResolver(h.userUseCase, h.userTransformer)
+	resolver := graph.CreateResolver(
+		h.userService,
+		h.userTransformer,
+		h.organizationService,
+		h.organizationTransformer,
+	)
 	c := graph.Config{Resolvers: resolver}
 	c.Directives.Auth = directives.Auth
 	srv := handler.NewDefaultServer(graph.NewExecutableSchema(c))

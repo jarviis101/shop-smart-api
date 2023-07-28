@@ -9,10 +9,10 @@ type Seeder interface {
 }
 
 type manager struct {
-	userUseCase service.UserUseCase
+	userUseCase service.UserService
 }
 
-func CreateSeeder(uc service.UserUseCase) Seeder {
+func CreateSeeder(uc service.UserService) Seeder {
 	return &manager{uc}
 }
 

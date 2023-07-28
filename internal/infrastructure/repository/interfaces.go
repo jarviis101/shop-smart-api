@@ -6,17 +6,18 @@ import (
 
 type (
 	UserRepository interface {
-		Store(
-			phone, firstName, lastName, middleName string,
-			roles []string,
-		) (*entity.User, error)
+		Get(id int64) (*entity.User, error)
 		GetByPhone(phone string) (*entity.User, error)
-		GetById(id int64) (*entity.User, error)
+		// GetByOrganization(id int64) ([]*entity.User, error)
+		Store(phone, firstName, lastName, middleName string, roles []string) (*entity.User, error)
 		UpdateUser(id int64, firstName, lastName, middleName string) (*entity.User, error)
 	}
 	OTPRepository interface {
-		Store(owner int64, code string) (*entity.OTP, error)
 		GetByOwnerAndCode(owner int64, code string) (*entity.OTP, error)
+		Store(owner int64, code string) (*entity.OTP, error)
 		Use(otp *entity.OTP) error
+	}
+	OrganizationRepository interface {
+		Get(id int64) (*entity.Organization, error)
 	}
 )

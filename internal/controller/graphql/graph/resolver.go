@@ -12,10 +12,22 @@ import (
 // It serves as dependency injection for your app, add any dependencies you require here.
 
 type Resolver struct {
-	userUseCase     service.UserUseCase
-	userTransformer transformers.UserTransformer
+	userService             service.UserService
+	userTransformer         transformers.UserTransformer
+	organizationService     service.OrganizationService
+	organizationTransformer transformers.OrganizationTransformer
 }
 
-func CreateResolver(u service.UserUseCase, ut transformers.UserTransformer) *Resolver {
-	return &Resolver{u, ut}
+func CreateResolver(
+	u service.UserService,
+	ut transformers.UserTransformer,
+	o service.OrganizationService,
+	ot transformers.OrganizationTransformer,
+) *Resolver {
+	return &Resolver{
+		userService:             u,
+		userTransformer:         ut,
+		organizationService:     o,
+		organizationTransformer: ot,
+	}
 }

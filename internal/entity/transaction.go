@@ -7,7 +7,7 @@ type Transaction struct {
 	UpdatedAt time.Time
 	ActionAt  time.Time
 	ID        int64
-	OwnerID   string
+	OwnerID   int64
 	TrxNumber string
 	Value     string
 	Status    bool

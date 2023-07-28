@@ -10,7 +10,7 @@ type otpService struct {
 	validator otp.Validator
 }
 
-func CreateOTPService(s otp.Sender, v otp.Validator) OTPUseCase {
+func CreateOTPService(s otp.Sender, v otp.Validator) OTPService {
 	return &otpService{s, v}
 }
 

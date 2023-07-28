@@ -13,16 +13,16 @@ import (
 type otpRouteManager struct {
 	group        *echo.Group
 	validator    *validator.Validator
-	userUseCase  service.UserUseCase
-	otpUseCase   service.OTPUseCase
+	userUseCase  service.UserService
+	otpUseCase   service.OTPService
 	serverConfig pkg.Server
 }
 
 func CreateOTPRouterManager(
 	g *echo.Group,
 	v *validator.Validator,
-	uc service.UserUseCase,
-	oc service.OTPUseCase,
+	uc service.UserService,
+	oc service.OTPService,
 	sc pkg.Server,
 ) RouteManager {
 	return &otpRouteManager{g, v, uc, oc, sc}

@@ -68,13 +68,10 @@ func (r *userRepository) GetByPhone(phone string) (*entity.User, error) {
 	return &user, nil
 }
 
-func (r *userRepository) GetById(id int64) (*entity.User, error) {
+func (r *userRepository) Get(id int64) (*entity.User, error) {
 	var user entity.User
 
-	err := r.database.QueryRow(
-		"SELECT * FROM users WHERE id = $1",
-		id,
-	).Scan(
+	err := r.database.QueryRow("SELECT * FROM users WHERE id = $1", id).Scan(
 		&user.ID,
 		&user.FirstName,
 		&user.LastName,

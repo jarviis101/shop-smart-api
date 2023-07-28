@@ -19,7 +19,7 @@ func CreateUserService(
 	cs user.Collector,
 	m user.Modifier,
 	c user.Creator,
-) UserUseCase {
+) UserService {
 	return &userService{a, f, cs, m, c}
 }
 

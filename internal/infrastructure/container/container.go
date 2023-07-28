@@ -7,6 +7,7 @@ import (
 	"shop-smart-api/internal/pkg/jwt"
 	"shop-smart-api/internal/pkg/sms"
 	"shop-smart-api/internal/service"
+	"shop-smart-api/internal/service/organization"
 	"shop-smart-api/internal/service/otp"
 	"shop-smart-api/internal/service/user"
 	"shop-smart-api/pkg"
@@ -14,8 +15,9 @@ import (
 )
 
 type Container interface {
-	ProvideUserUseCase() service.UserUseCase
-	ProvideOTPUseCase() service.OTPUseCase
+	ProvideUserService() service.UserService
+	ProvideOTPService() service.OTPService
+	ProvideOrganizationService() service.OrganizationService
 }
 
 type container struct {
@@ -27,15 +29,19 @@ func CreateContainer(db *sql.DB, sc pkg.Server) Container {
 	return &container{db, sc}
 }
 
-func (c *container) ProvideUserUseCase() service.UserUseCase {
-	return c.resolveUserUseCaseDependencies()
+func (c *container) ProvideUserService() service.UserService {
+	return c.resolveUserServiceDependencies()
 }
 
-func (c *container) ProvideOTPUseCase() service.OTPUseCase {
-	return c.resolveOTPUseCaseDependencies()
+func (c *container) ProvideOTPService() service.OTPService {
+	return c.resolveOTPServiceDependencies()
 }
 
-func (c *container) resolveUserUseCaseDependencies() service.UserUseCase {
+func (c *container) ProvideOrganizationService() service.OrganizationService {
+	return c.resolveOrganizationServiceDependencies()
+}
+
+func (c *container) resolveUserServiceDependencies() service.UserService {
 	jwtManager := jwt.CreateManager(c.serverConfig.Secret)
 
 	userRepository := repository.CreateUserRepository(c.database)
@@ -48,7 +54,7 @@ func (c *container) resolveUserUseCaseDependencies() service.UserUseCase {
 	return service.CreateUserService(userAuthService, userFinder, userCollector, userModifier, userCreator)
 }
 
-func (c *container) resolveOTPUseCaseDependencies() service.OTPUseCase {
+func (c *container) resolveOTPServiceDependencies() service.OTPService {
 	debug, _ := strconv.ParseBool(c.serverConfig.Debug)
 	smsClient := sms.CreateClient(smsru.NewClient(c.serverConfig.SmsApiKey), debug)
 
@@ -59,4 +65,11 @@ func (c *container) resolveOTPUseCaseDependencies() service.OTPUseCase {
 	otpValidator := otp.CreateValidator(otpRepository, debug)
 
 	return service.CreateOTPService(otpSender, otpValidator)
+}
+
+func (c *container) resolveOrganizationServiceDependencies() service.OrganizationService {
+	organizationRepository := repository.CreateOrganizationRepository(c.database)
+	organizationFinder := organization.CreateFinder(organizationRepository)
+
+	return service.CreateOrganizationService(organizationFinder)
 }

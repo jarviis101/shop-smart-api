@@ -11,15 +11,15 @@ import (
 type authRouteManager struct {
 	group       *echo.Group
 	validator   *validator.Validator
-	userUseCase service.UserUseCase
-	otpUseCase  service.OTPUseCase
+	userUseCase service.UserService
+	otpUseCase  service.OTPService
 }
 
 func CreateAuthRouterManager(
 	g *echo.Group,
 	v *validator.Validator,
-	uc service.UserUseCase,
-	oc service.OTPUseCase,
+	uc service.UserService,
+	oc service.OTPService,
 ) RouteManager {
 	return &authRouteManager{g, v, uc, oc}
 }
