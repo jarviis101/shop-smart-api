@@ -13,7 +13,13 @@ type userService struct {
 	creator   user.Creator
 }
 
-func CreateUserService(a user.AuthService, f user.Finder, cs user.Collector, m user.Modifier, c user.Creator) UserUseCase {
+func CreateUserService(
+	a user.AuthService,
+	f user.Finder,
+	cs user.Collector,
+	m user.Modifier,
+	c user.Creator,
+) UserUseCase {
 	return &userService{a, f, cs, m, c}
 }
 

@@ -10,6 +10,10 @@ import (
 
 func CreateDatabaseConnection(cfg Database) (*sql.DB, error) {
 	db, err := sql.Open("postgres", cfg.URL)
+	if err != nil {
+		return nil, err
+	}
+
 	driver, err := postgres.WithInstance(db, &postgres.Config{})
 	if err != nil {
 		return nil, err
