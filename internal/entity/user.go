@@ -46,11 +46,11 @@ func (u *User) IsUser() bool {
 }
 
 func (u *User) IsOwner() bool {
-	return u.containsRole(OwnerRole)
+	return u.containsRole(UserRole) && u.containsRole(OwnerRole)
 }
 
 func (u *User) IsEditor() bool {
-	return u.containsRole(EditorRole)
+	return u.containsRole(UserRole) && u.containsRole(EditorRole)
 }
 
 func (u *User) containsRole(role Role) bool {

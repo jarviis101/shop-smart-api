@@ -55,6 +55,10 @@ func (r *queryResolver) GetOrganizationUsers(ctx context.Context) ([]*model.User
 	currentUser := ctx.Value(directives.AuthKey(directives.Key)).(int64)
 	user, _ := r.userService.Get(currentUser)
 
+	if !user.IsOwner() && !user.IsEditor() {
+		return nil, &gqlerror.Error{Message: "access denied"}
+	}
+
 	if user.OrganizationID == nil {
 		return nil, &gqlerror.Error{Message: "organization not found"}
 	}
