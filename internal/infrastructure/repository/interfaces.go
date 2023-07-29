@@ -2,6 +2,7 @@ package repository
 
 import (
 	"shop-smart-api/internal/entity"
+	"time"
 )
 
 type (
@@ -25,5 +26,12 @@ type (
 	}
 	TransactionRepository interface {
 		GetByOwner(id int64) ([]*entity.Transaction, error)
+		Store(
+			owner int64,
+			trxNumber string,
+			value float64,
+			actionedAt *time.Time,
+			status bool,
+		) (*entity.Transaction, error)
 	}
 )

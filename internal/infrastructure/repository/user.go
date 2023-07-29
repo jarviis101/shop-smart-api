@@ -34,18 +34,17 @@ func (r *userRepository) Store(
 	phone, firstName, lastName, middleName string,
 	roles []entity.Role,
 ) (*entity.User, error) {
-	return r.executeQueryRow(
-		`INSERT INTO users (first_name, last_name, middle_name, phone, roles) VALUES ($1, $2, $3, $4, $5)
+	return r.executeQueryRow(`
+		INSERT INTO users (first_name, last_name, middle_name, phone, roles) VALUES ($1, $2, $3, $4, $5)
 		RETURNING id, first_name, last_name, middle_name, phone, created_at, updated_at, organization_id, roles
-		`, firstName, lastName, middleName, phone, pq.Array(roles),
-	)
+	`, firstName, lastName, middleName, phone, pq.Array(roles))
 }
 
 func (r *userRepository) UpdateUser(id int64, firstName, lastName, middleName string) (*entity.User, error) {
 	return r.executeQueryRow(`
 		UPDATE users SET first_name = $1, last_name = $2, middle_name = $3 WHERE id = $4
 		RETURNING id, first_name, last_name, middle_name, phone, created_at, updated_at, organization_id, roles
-		`, firstName, lastName, middleName, id)
+	`, firstName, lastName, middleName, id)
 }
 
 func (r *userRepository) AddOrganization(id, organization int64, role *entity.Role) (*entity.User, error) {
@@ -53,15 +52,13 @@ func (r *userRepository) AddOrganization(id, organization int64, role *entity.Ro
 		return r.executeQueryRow(`
 			UPDATE users SET organization_id = $1 WHERE id = $2
 			RETURNING id, first_name, last_name, middle_name, phone, created_at, updated_at, organization_id, roles
-			`, organization, id,
-		)
+		`, organization, id)
 	}
 
 	return r.executeQueryRow(`
 		UPDATE users SET organization_id = $1, roles = array_append(roles, $2) WHERE id = $3
 		RETURNING id, first_name, last_name, middle_name, phone, created_at, updated_at, organization_id, roles
-		`, organization, role, id,
-	)
+		`, organization, role, id)
 }
 
 func (r *userRepository) executeQuery(query string, args ...any) ([]*entity.User, error) {

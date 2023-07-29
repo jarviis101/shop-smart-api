@@ -5,10 +5,12 @@ import (
 	"log"
 	"shop-smart-api/internal/entity"
 	"shop-smart-api/internal/infrastructure/repository"
+	"time"
 )
 
 const (
-	countOfUsers = 10
+	countOfUsers        = 10
+	countOfTransactions = 10
 )
 
 type Seeder interface {
@@ -18,11 +20,16 @@ type Seeder interface {
 type manager struct {
 	userRepository         repository.UserRepository
 	organizationRepository repository.OrganizationRepository
+	transactionRepository  repository.TransactionRepository
 	users                  []*entity.User
 }
 
-func CreateSeeder(ur repository.UserRepository, or repository.OrganizationRepository) Seeder {
-	return &manager{userRepository: ur, organizationRepository: or}
+func CreateSeeder(
+	ur repository.UserRepository,
+	or repository.OrganizationRepository,
+	tr repository.TransactionRepository,
+) Seeder {
+	return &manager{userRepository: ur, organizationRepository: or, transactionRepository: tr}
 }
 
 func (s *manager) Seed() error {
@@ -31,6 +38,10 @@ func (s *manager) Seed() error {
 	}
 
 	if err := s.seedOrganization(); err != nil {
+		return err
+	}
+
+	if err := s.seedTransactions(); err != nil {
 		return err
 	}
 
@@ -90,6 +101,48 @@ func (s *manager) seedOrganization() error {
 	}
 
 	log.Println("Organization seeding completed")
+
+	return nil
+}
+
+func (s *manager) seedTransactions() error {
+	for _, user := range s.users {
+		for i := 0; i < countOfTransactions; i++ {
+			model := Transaction{}
+			if err := faker.FakeData(&model); err != nil {
+				return err
+			}
+
+			value := generateRandomFloatValue(10, 200)
+			actionedAt := time.Now()
+
+			if i%2 == 0 {
+				if _, err := s.transactionRepository.Store(
+					user.ID,
+					model.TrxNumber,
+					value,
+					nil,
+					false,
+				); err != nil {
+					return err
+				}
+
+				continue
+			}
+
+			if _, err := s.transactionRepository.Store(
+				user.ID,
+				model.TrxNumber,
+				value,
+				&actionedAt,
+				true,
+			); err != nil {
+				return err
+			}
+		}
+	}
+
+	log.Println("Transaction seeding completed")
 
 	return nil
 }
