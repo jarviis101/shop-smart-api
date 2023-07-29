@@ -40,6 +40,12 @@ For down migrations use command:
 make down-migration
 ```
 
+## Data seeding
+Use command for run seeder:
+```bash
+make run-seeder
+```
+
 ## Codestyle
 Use command for run linter:
 ```bash

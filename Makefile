@@ -14,3 +14,7 @@ run-server:
 	cd build && docker-compose up -d
 	cd ../
 	go run cmd/server/main.go
+
+run-seeder:
+	cd ../
+	go run cmd/seeder/main.go
