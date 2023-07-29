@@ -49,10 +49,3 @@ func (uc *userService) Update(
 ) (*entity.User, error) {
 	return uc.modifier.UpdateUser(user, firstName, lastName, middleName)
 }
-
-func (uc *userService) Create(
-	phone, firstName, lastName, middleName string,
-	roles []string,
-) (*entity.User, error) {
-	return uc.creator.CreateWithData(phone, firstName, lastName, middleName, roles)
-}

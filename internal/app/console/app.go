@@ -19,7 +19,8 @@ func CreateApplication(db *sql.DB, sc pkg.Server) app.Application {
 
 func (a *application) Run() error {
 	userRepository := repository.CreateUserRepository(a.database)
+	organizationRepository := repository.CreateOrganizationRepository(a.database)
 
-	manager := seeder.CreateSeeder(userRepository)
+	manager := seeder.CreateSeeder(userRepository, organizationRepository)
 	return manager.Seed()
 }

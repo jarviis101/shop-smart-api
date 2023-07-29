@@ -7,3 +7,8 @@ type User struct {
 	Phone      string   `faker:"phone_number"`
 	Roles      []string `faker:"-"`
 }
+
+type Organization struct {
+	OwnerID int64  `faker:"-"`
+	Name    string `faker:"name"`
+}

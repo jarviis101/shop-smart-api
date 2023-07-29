@@ -3,6 +3,7 @@ package seeder
 import (
 	"github.com/go-faker/faker/v4"
 	"log"
+	"shop-smart-api/internal/entity"
 	"shop-smart-api/internal/infrastructure/repository"
 )
 
@@ -11,11 +12,13 @@ type Seeder interface {
 }
 
 type manager struct {
-	userRepository repository.UserRepository
+	userRepository         repository.UserRepository
+	organizationRepository repository.OrganizationRepository
+	users                  []*entity.User
 }
 
-func CreateSeeder(ur repository.UserRepository) Seeder {
-	return &manager{ur}
+func CreateSeeder(ur repository.UserRepository, or repository.OrganizationRepository) Seeder {
+	return &manager{userRepository: ur, organizationRepository: or}
 }
 
 func (s *manager) Seed() error {
@@ -23,31 +26,66 @@ func (s *manager) Seed() error {
 		return err
 	}
 
+	if err := s.seedOrganization(); err != nil {
+		return err
+	}
+
 	return nil
 }
 
 func (s *manager) seedUsers() error {
-	if err := s.userRepository.Truncate(); err != nil {
-		return err
-	}
-
 	for i := 0; i < 10; i++ {
-		user := User{}
-		if err := faker.FakeData(&user); err != nil {
+		model := User{}
+		if err := faker.FakeData(&model); err != nil {
 			return err
 		}
 
-		if _, err := s.userRepository.Store(
-			user.Phone,
-			user.FirstName,
-			user.LastName,
+		user, err := s.userRepository.Store(
+			model.Phone,
+			model.FirstName,
+			model.LastName,
 			"",
-			[]string{"user"},
-		); err != nil {
+			[]entity.Role{entity.UserRole},
+		)
+		if err != nil {
 			return err
 		}
+
+		s.users = append(s.users, user)
 	}
 
 	log.Println("User seeding completed")
+
+	return nil
+}
+
+func (s *manager) seedOrganization() error {
+	model := Organization{}
+	if err := faker.FakeData(&model); err != nil {
+		return err
+	}
+
+	owner := s.users[0]
+	role := entity.OwnerRole
+	code := generateRandomCode()
+	organization, err := s.organizationRepository.Store(model.Name, code, code, code, owner.ID)
+	if err != nil {
+		return err
+	}
+
+	for i, user := range s.users {
+		if i == 0 {
+			if _, err := s.userRepository.AddOrganization(user.ID, organization.ID, &role); err != nil {
+				return err
+			}
+			continue
+		}
+		if _, err := s.userRepository.AddOrganization(user.ID, organization.ID, nil); err != nil {
+			return err
+		}
+	}
+
+	log.Println("Organization seeding completed")
+
 	return nil
 }
