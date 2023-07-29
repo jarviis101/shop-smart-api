@@ -2,7 +2,7 @@ package main
 
 import (
 	"log"
-	"shop-smart-api/internal/app/console"
+	"shop-smart-api/internal/app/seeder"
 	"shop-smart-api/pkg"
 )
 
@@ -22,7 +22,7 @@ func main() {
 		}
 	}()
 
-	application := console.CreateApplication(db, config.Server)
+	application := seeder.CreateApplication(db, config.Server)
 	if err := application.Run(); err != nil {
 		log.Printf("Error: %s\n", err.Error())
 	}

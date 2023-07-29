@@ -10,7 +10,7 @@ type User {
   lastName: String
   middleName: String
   phone: String!
-  roles: [String]!
+  roles: [String!]!
   organizationId: ID!
   createdAt: String!
   updatedAt: String!

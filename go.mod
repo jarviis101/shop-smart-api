@@ -5,6 +5,7 @@ go 1.20
 require (
 	github.com/99designs/gqlgen v0.17.33
 	github.com/dmitriy-borisov/go-smsru v0.0.0-20161103204751-6ee35501547f
+	github.com/go-faker/faker/v4 v4.1.1
 	github.com/go-playground/validator/v10 v10.14.1
 	github.com/golang-jwt/jwt/v5 v5.0.0
 	github.com/golang-migrate/migrate/v4 v4.16.2
@@ -19,7 +20,6 @@ require (
 	github.com/agnivade/levenshtein v1.1.1 // indirect
 	github.com/cpuguy83/go-md2man/v2 v2.0.2 // indirect
 	github.com/gabriel-vasile/mimetype v1.4.2 // indirect
-	github.com/go-faker/faker/v4 v4.1.1 // indirect
 	github.com/go-playground/locales v0.14.1 // indirect
 	github.com/go-playground/universal-translator v0.18.1 // indirect
 	github.com/golang-jwt/jwt v3.2.2+incompatible // indirect

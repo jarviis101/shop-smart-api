@@ -40,3 +40,24 @@ type User struct {
 	Phone          string
 	OrganizationID *int64
 }
+
+func (u *User) IsUser() bool {
+	return u.containsRole(UserRole)
+}
+
+func (u *User) IsOwner() bool {
+	return u.containsRole(OwnerRole)
+}
+
+func (u *User) IsEditor() bool {
+	return u.containsRole(EditorRole)
+}
+
+func (u *User) containsRole(role Role) bool {
+	for _, r := range u.Roles {
+		if r == role {
+			return true
+		}
+	}
+	return false
+}

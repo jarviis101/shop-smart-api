@@ -6,9 +6,10 @@ package graph
 
 import (
 	"context"
-	"github.com/vektah/gqlparser/v2/gqlerror"
 	"shop-smart-api/internal/controller/graphql/directives"
 	"shop-smart-api/internal/controller/graphql/graph/model"
+
+	"github.com/vektah/gqlparser/v2/gqlerror"
 )
 
 // UpdatePersonalInfo is the resolver for the updatePersonalInfo field.

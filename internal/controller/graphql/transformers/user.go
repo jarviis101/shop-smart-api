@@ -30,10 +30,22 @@ func (t *userTransformer) TransformManyToModel(u []*entity.User) []*model.User {
 
 func (t *userTransformer) TransformToModel(u *entity.User) *model.User {
 	return &model.User{
-		ID:         strconv.Itoa(int(u.ID)),
-		FirstName:  &u.FirstName,
-		LastName:   &u.LastName,
-		MiddleName: &u.MiddleName,
-		Phone:      u.Phone,
+		ID:             strconv.Itoa(int(u.ID)),
+		FirstName:      &u.FirstName,
+		LastName:       &u.LastName,
+		MiddleName:     &u.MiddleName,
+		Phone:          u.Phone,
+		Roles:          t.parseRoles(u.Roles),
+		OrganizationID: strconv.Itoa(int(*u.OrganizationID)),
 	}
+}
+
+func (t *userTransformer) parseRoles(userRoles []entity.Role) []string {
+	var roles []string
+
+	for _, role := range userRoles {
+		roles = append(roles, string(role))
+	}
+
+	return roles
 }

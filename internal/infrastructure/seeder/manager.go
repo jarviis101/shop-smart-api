@@ -7,6 +7,10 @@ import (
 	"shop-smart-api/internal/infrastructure/repository"
 )
 
+const (
+	countOfUsers = 10
+)
+
 type Seeder interface {
 	Seed() error
 }
@@ -34,7 +38,7 @@ func (s *manager) Seed() error {
 }
 
 func (s *manager) seedUsers() error {
-	for i := 0; i < 10; i++ {
+	for i := 0; i < countOfUsers; i++ {
 		model := User{}
 		if err := faker.FakeData(&model); err != nil {
 			return err

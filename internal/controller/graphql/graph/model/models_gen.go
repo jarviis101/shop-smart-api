@@ -24,13 +24,13 @@ type UpdateUser struct {
 }
 
 type User struct {
-	ID             string    `json:"id"`
-	FirstName      *string   `json:"firstName,omitempty"`
-	LastName       *string   `json:"lastName,omitempty"`
-	MiddleName     *string   `json:"middleName,omitempty"`
-	Phone          string    `json:"phone"`
-	Roles          []*string `json:"roles"`
-	OrganizationID string    `json:"organizationId"`
-	CreatedAt      string    `json:"createdAt"`
-	UpdatedAt      string    `json:"updatedAt"`
+	ID             string   `json:"id"`
+	FirstName      *string  `json:"firstName,omitempty"`
+	LastName       *string  `json:"lastName,omitempty"`
+	MiddleName     *string  `json:"middleName,omitempty"`
+	Phone          string   `json:"phone"`
+	Roles          []string `json:"roles"`
+	OrganizationID string   `json:"organizationId"`
+	CreatedAt      string   `json:"createdAt"`
+	UpdatedAt      string   `json:"updatedAt"`
 }
