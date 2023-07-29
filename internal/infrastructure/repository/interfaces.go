@@ -24,6 +24,6 @@ type (
 		Store(name, kpp, orgn, inn string, owner int64) (*entity.Organization, error)
 	}
 	TransactionRepository interface {
-		GetByOwner(owner int64) ([]*entity.Transaction, error)
+		GetByOwner(id int64) ([]*entity.Transaction, error)
 	}
 )

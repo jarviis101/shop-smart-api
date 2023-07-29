@@ -7,7 +7,7 @@ CREATE TABLE IF NOT EXISTS organizations (
     created_at TIMESTAMPTZ NOT NULL DEFAULT CURRENT_TIMESTAMP,
     updated_at TIMESTAMPTZ NOT NULL DEFAULT CURRENT_TIMESTAMP,
     owner_id INT NOT NULL,
-    CONSTRAINT fk_user FOREIGN KEY(owner_id) references users(id)
+    CONSTRAINT fk_user FOREIGN KEY(owner_id) REFERENCES users(id)
 );
 
 ALTER TABLE users ADD COLUMN organization_id INT,

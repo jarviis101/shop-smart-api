@@ -3,12 +3,12 @@ package entity
 import "time"
 
 type Transaction struct {
-	CreatedAt time.Time
-	UpdatedAt time.Time
-	ActionAt  time.Time
-	ID        int64
-	OwnerID   int64
-	TrxNumber string
-	Value     string
-	Status    bool
+	CreatedAt  time.Time
+	UpdatedAt  time.Time
+	ActionedAt time.Time
+	ID         int64
+	OwnerID    int64
+	Value      float64
+	TrxNumber  string
+	Status     bool
 }
