@@ -29,6 +29,8 @@ func (t *userTransformer) TransformManyToModel(u []*entity.User) []*model.User {
 }
 
 func (t *userTransformer) TransformToModel(u *entity.User) *model.User {
+	organizationId := t.resolveOrganization(u.OrganizationID)
+
 	return &model.User{
 		ID:             strconv.Itoa(int(u.ID)),
 		FirstName:      &u.FirstName,
@@ -36,7 +38,7 @@ func (t *userTransformer) TransformToModel(u *entity.User) *model.User {
 		MiddleName:     &u.MiddleName,
 		Phone:          u.Phone,
 		Roles:          t.parseRoles(u.Roles),
-		OrganizationID: strconv.Itoa(int(*u.OrganizationID)),
+		OrganizationID: organizationId,
 	}
 }
 
@@ -48,4 +50,13 @@ func (t *userTransformer) parseRoles(userRoles []entity.Role) []string {
 	}
 
 	return roles
+}
+
+func (t *userTransformer) resolveOrganization(organizationId *int64) *string {
+	if organizationId == nil {
+		return nil
+	}
+
+	id := strconv.Itoa(int(*organizationId))
+	return &id
 }

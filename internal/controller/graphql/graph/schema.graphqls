@@ -11,7 +11,7 @@ type User {
   middleName: String
   phone: String!
   roles: [String!]!
-  organizationId: ID!
+  organizationId: ID
   createdAt: String!
   updatedAt: String!
 }

@@ -30,7 +30,7 @@ type User struct {
 	MiddleName     *string  `json:"middleName,omitempty"`
 	Phone          string   `json:"phone"`
 	Roles          []string `json:"roles"`
-	OrganizationID string   `json:"organizationId"`
+	OrganizationID *string  `json:"organizationId,omitempty"`
 	CreatedAt      string   `json:"createdAt"`
 	UpdatedAt      string   `json:"updatedAt"`
 }
