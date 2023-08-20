@@ -1,9 +1,8 @@
 package seeder
 
 type User struct {
-	FirstName string `faker:"first_name"`
-	LastName  string `faker:"last_name"`
-	Phone     string `faker:"phone_number"`
+	Email string `faker:"email"`
+	Phone string `faker:"phone_number"`
 }
 
 type Organization struct {

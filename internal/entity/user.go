@@ -34,9 +34,7 @@ type User struct {
 	UpdatedAt      time.Time
 	Roles          []Role
 	ID             int64
-	FirstName      string
-	LastName       string
-	MiddleName     string
+	Email          string
 	Phone          string
 	OrganizationID *int64
 }

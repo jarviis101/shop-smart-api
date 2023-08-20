@@ -57,9 +57,7 @@ func (s *manager) seedUsers() error {
 
 		user, err := s.userRepository.Store(
 			model.Phone,
-			model.FirstName,
-			model.LastName,
-			"",
+			model.Email,
 			[]entity.Role{entity.UserRole},
 		)
 		if err != nil {

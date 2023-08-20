@@ -11,8 +11,8 @@ type (
 		GetByPhone(phone string) (*entity.User, error)
 		GetByOrganization(id int64) ([]*entity.User, error)
 		GetAll() ([]*entity.User, error)
-		Store(phone, firstName, lastName, middleName string, roles []entity.Role) (*entity.User, error)
-		UpdateUser(id int64, firstName, lastName, middleName string) (*entity.User, error)
+		Store(phone, email string, roles []entity.Role) (*entity.User, error)
+		UpdateUser(id int64, email string) (*entity.User, error)
 		AddOrganization(id, organization int64, role *entity.Role) (*entity.User, error)
 	}
 	OTPRepository interface {

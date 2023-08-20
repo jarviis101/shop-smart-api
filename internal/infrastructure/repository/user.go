@@ -31,33 +31,33 @@ func (r *userRepository) GetAll() ([]*entity.User, error) {
 }
 
 func (r *userRepository) Store(
-	phone, firstName, lastName, middleName string,
+	phone, email string,
 	roles []entity.Role,
 ) (*entity.User, error) {
 	return r.executeQueryRow(`
-		INSERT INTO users (first_name, last_name, middle_name, phone, roles) VALUES ($1, $2, $3, $4, $5)
-		RETURNING id, first_name, last_name, middle_name, phone, created_at, updated_at, organization_id, roles
-	`, firstName, lastName, middleName, phone, pq.Array(roles))
+		INSERT INTO users (email, phone, roles) VALUES ($1, $2, $3)
+		RETURNING id, email, phone, created_at, updated_at, organization_id, roles
+	`, email, phone, pq.Array(roles))
 }
 
-func (r *userRepository) UpdateUser(id int64, firstName, lastName, middleName string) (*entity.User, error) {
+func (r *userRepository) UpdateUser(id int64, email string) (*entity.User, error) {
 	return r.executeQueryRow(`
-		UPDATE users SET first_name = $1, last_name = $2, middle_name = $3 WHERE id = $4
-		RETURNING id, first_name, last_name, middle_name, phone, created_at, updated_at, organization_id, roles
-	`, firstName, lastName, middleName, id)
+		UPDATE users SET email = $1 WHERE id = $2
+		RETURNING id, email, phone, created_at, updated_at, organization_id, roles
+	`, email, id)
 }
 
 func (r *userRepository) AddOrganization(id, organization int64, role *entity.Role) (*entity.User, error) {
 	if role == nil {
 		return r.executeQueryRow(`
 			UPDATE users SET organization_id = $1 WHERE id = $2
-			RETURNING id, first_name, last_name, middle_name, phone, created_at, updated_at, organization_id, roles
+			RETURNING id, email, phone, created_at, updated_at, organization_id, roles
 		`, organization, id)
 	}
 
 	return r.executeQueryRow(`
 		UPDATE users SET organization_id = $1, roles = array_append(roles, $2) WHERE id = $3
-		RETURNING id, first_name, last_name, middle_name, phone, created_at, updated_at, organization_id, roles
+		RETURNING id, email, phone, created_at, updated_at, organization_id, roles
 		`, organization, role, id)
 }
 
@@ -74,9 +74,7 @@ func (r *userRepository) executeQuery(query string, args ...any) ([]*entity.User
 
 		if err := rows.Scan(
 			&user.ID,
-			&user.FirstName,
-			&user.LastName,
-			&user.MiddleName,
+			&user.Email,
 			&user.Phone,
 			&user.CreatedAt,
 			&user.UpdatedAt,
@@ -97,9 +95,7 @@ func (r *userRepository) executeQueryRow(query string, args ...any) (*entity.Use
 
 	err := r.database.QueryRow(query, args...).Scan(
 		&user.ID,
-		&user.FirstName,
-		&user.LastName,
-		&user.MiddleName,
+		&user.Email,
 		&user.Phone,
 		&user.CreatedAt,
 		&user.UpdatedAt,

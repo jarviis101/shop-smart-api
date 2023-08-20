@@ -11,8 +11,7 @@ type (
 		GetByOrganization(id int64) ([]*entity.User, error)
 		PreAuthenticate(phone string) (string, error)
 		Authenticate(user *entity.User) (string, error)
-		Update(user *entity.User, firstName, lastName, middleName string) (*entity.User, error)
-		// Create(phone, firstName, lastName, middleName string, roles []string) (*entity.User, error)
+		Update(user *entity.User, email string) (*entity.User, error)
 	}
 	OTPService interface {
 		Send(*entity.User) error

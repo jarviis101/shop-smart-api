@@ -6,9 +6,7 @@ directive @auth on FIELD_DEFINITION
 
 type User {
   id: ID!
-  firstName: String
-  lastName: String
-  middleName: String
+  email: String
   phone: String!
   roles: [String!]!
   organizationId: ID
@@ -39,9 +37,7 @@ type Query {
 }
 
 input UpdateUser {
-  firstName: String!
-  lastName: String!
-  middleName: String!
+  email: String!
 }
 
 type Mutation {

@@ -43,9 +43,6 @@ func (uc *userService) Authenticate(user *entity.User) (string, error) {
 	return uc.auth.FullAuthenticate(user)
 }
 
-func (uc *userService) Update(
-	user *entity.User,
-	firstName, lastName, middleName string,
-) (*entity.User, error) {
-	return uc.modifier.UpdateUser(user, firstName, lastName, middleName)
+func (uc *userService) Update(user *entity.User, email string) (*entity.User, error) {
+	return uc.modifier.UpdateUser(user, email)
 }

@@ -18,16 +18,12 @@ type Transaction struct {
 }
 
 type UpdateUser struct {
-	FirstName  string `json:"firstName"`
-	LastName   string `json:"lastName"`
-	MiddleName string `json:"middleName"`
+	Email string `json:"email"`
 }
 
 type User struct {
 	ID             string   `json:"id"`
-	FirstName      *string  `json:"firstName,omitempty"`
-	LastName       *string  `json:"lastName,omitempty"`
-	MiddleName     *string  `json:"middleName,omitempty"`
+	Email          *string  `json:"email,omitempty"`
 	Phone          string   `json:"phone"`
 	Roles          []string `json:"roles"`
 	OrganizationID *string  `json:"organizationId,omitempty"`

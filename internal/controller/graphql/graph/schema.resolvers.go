@@ -17,7 +17,7 @@ func (r *mutationResolver) UpdatePersonalInfo(ctx context.Context, input model.U
 	currentUser := ctx.Value(directives.AuthKey(directives.Key)).(int64)
 	user, _ := r.userService.Get(currentUser)
 
-	updatedUser, err := r.userService.Update(user, input.FirstName, input.LastName, input.MiddleName)
+	updatedUser, err := r.userService.Update(user, input.Email)
 	if err != nil {
 		return nil, &gqlerror.Error{Message: "something went wrong"}
 	}

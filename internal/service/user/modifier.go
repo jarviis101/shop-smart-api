@@ -6,7 +6,7 @@ import (
 )
 
 type Modifier interface {
-	UpdateUser(user *entity.User, firstName, lastName, middleName string) (*entity.User, error)
+	UpdateUser(user *entity.User, email string) (*entity.User, error)
 }
 
 type modifier struct {
@@ -17,8 +17,6 @@ func CreateModifier(r repository.UserRepository) Modifier {
 	return &modifier{r}
 }
 
-func (m *modifier) UpdateUser(
-	user *entity.User, firstName, lastName, middleName string,
-) (*entity.User, error) {
-	return m.repository.UpdateUser(user.ID, firstName, lastName, middleName)
+func (m *modifier) UpdateUser(user *entity.User, email string) (*entity.User, error) {
+	return m.repository.UpdateUser(user.ID, email)
 }

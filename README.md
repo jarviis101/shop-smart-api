@@ -6,6 +6,7 @@ Shop Smart Backend API
 - Make (https://www.gnu.org/software/make/)
 - Go 1.20 (https://go.dev/)
 - Docker Compose (https://docs.docker.com/compose/)
+- Migrate (https://github.com/golang-migrate/migrate/tree/master/)
 
 ## Run API
 ```bash

@@ -18,5 +18,5 @@ func CreateCreator(r repository.UserRepository) Creator {
 }
 
 func (c *creator) Create(phone string) (*entity.User, error) {
-	return c.repository.Store(phone, "", "", "", []entity.Role{entity.UserRole})
+	return c.repository.Store(phone, "", []entity.Role{entity.UserRole})
 }
