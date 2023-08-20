@@ -27,6 +27,13 @@ type Organization {
 
 type Transaction {
   id: ID!
+  ownerId: ID!
+  value: Float!
+  trxNumber: String!
+  status: Boolean!
+  createdAt: String!
+  updatedAt: String!
+  actionedAt: String
 }
 
 type Query {

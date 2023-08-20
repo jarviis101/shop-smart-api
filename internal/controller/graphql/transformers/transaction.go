@@ -4,6 +4,7 @@ import (
 	"shop-smart-api/internal/controller/graphql/graph/model"
 	"shop-smart-api/internal/entity"
 	"strconv"
+	"time"
 )
 
 type TransactionTransformer interface {
@@ -28,8 +29,26 @@ func (t *transactionTransformer) TransformManyToModel(u []*entity.Transaction) [
 	return transactions
 }
 
-func (t *transactionTransformer) TransformToModel(u *entity.Transaction) *model.Transaction {
+func (t *transactionTransformer) TransformToModel(m *entity.Transaction) *model.Transaction {
+	actionedAt := t.resolveActionedAt(m.ActionedAt)
+
 	return &model.Transaction{
-		ID: strconv.Itoa(int(u.ID)),
+		ID:         strconv.Itoa(int(m.ID)),
+		OwnerID:    strconv.Itoa(int(m.OwnerID)),
+		Value:      m.Value,
+		TrxNumber:  m.TrxNumber,
+		Status:     m.Status,
+		CreatedAt:  m.CreatedAt.Format(time.RFC822),
+		UpdatedAt:  m.UpdatedAt.Format(time.RFC822),
+		ActionedAt: actionedAt,
 	}
+}
+
+func (t *transactionTransformer) resolveActionedAt(actionedAt *time.Time) *string {
+	if actionedAt == nil {
+		return nil
+	}
+
+	timestamp := actionedAt.Format(time.RFC822)
+	return &timestamp
 }

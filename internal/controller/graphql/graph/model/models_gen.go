@@ -14,7 +14,14 @@ type Organization struct {
 }
 
 type Transaction struct {
-	ID string `json:"id"`
+	ID         string  `json:"id"`
+	OwnerID    string  `json:"ownerId"`
+	Value      float64 `json:"value"`
+	TrxNumber  string  `json:"trxNumber"`
+	Status     bool    `json:"status"`
+	CreatedAt  string  `json:"createdAt"`
+	UpdatedAt  string  `json:"updatedAt"`
+	ActionedAt *string `json:"actionedAt,omitempty"`
 }
 
 type UpdateUser struct {
