@@ -38,13 +38,18 @@ func (r *authRouteManager) auth(c echo.Context) error {
 		return err
 	}
 
-	token, err := r.userUseCase.PreAuthenticate(authRequest.Phone)
+	// TODO: refactor
+	if authRequest.Channel == "email" {
+		return nil
+	}
+
+	token, err := r.userUseCase.PreAuthenticate(authRequest.Resource)
 	if err != nil {
 		return echo.NewHTTPError(http.StatusBadRequest, err.Error())
 	}
 
 	// TODO: In a future rework this
-	user, err := r.userUseCase.GetByPhone(authRequest.Phone)
+	user, err := r.userUseCase.GetByPhone(authRequest.Resource)
 	if err != nil {
 		return err
 	}

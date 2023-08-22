@@ -2,7 +2,8 @@ package types
 
 type (
 	AuthUserRequest struct {
-		Phone string `json:"phone" validate:"required"`
+		Channel  string `json:"channel" validate:"required"`
+		Resource string `json:"resource" validate:"required"`
 	}
 
 	TokenResponse struct {

@@ -83,13 +83,18 @@ components:
   schemas:
     PreAuthenticate:
       required:
-        - phone
+        - resource
+        - channel
       type: object
       properties:
-        phone:
+        resource:
           type: string
-          description: Phone
+          description: Phone OR email
           example: '+380965235852'
+        channel:
+          type: string
+          description: Channel - `email` OR `phone`
+          example: phone
     VerifyOTP:
       required:
         - code
