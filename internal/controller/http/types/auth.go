@@ -9,4 +9,11 @@ type (
 	TokenResponse struct {
 		Token string `json:"token"`
 	}
+
+	Channel string
+)
+
+const (
+	Phone Channel = "phone"
+	Email Channel = "email"
 )

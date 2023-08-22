@@ -1,6 +1,7 @@
 package service
 
 import (
+	"shop-smart-api/internal/controller/http/types"
 	"shop-smart-api/internal/entity"
 )
 
@@ -14,7 +15,7 @@ type (
 		Update(user *entity.User, email string) (*entity.User, error)
 	}
 	OTPService interface {
-		Send(*entity.User) error
+		Send(*entity.User, types.Channel) error
 		Verify(owner *entity.User, code string) error
 	}
 	OrganizationService interface {
