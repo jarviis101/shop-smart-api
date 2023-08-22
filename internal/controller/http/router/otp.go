@@ -41,7 +41,9 @@ func (r *otpRouteManager) send(c echo.Context) error {
 		return err
 	}
 
-	if err := r.otpUseCase.Send(user, types.Phone); err != nil {
+	t := types.Phone
+
+	if err := r.otpUseCase.Send(user, &t); err != nil {
 		return err
 	}
 

@@ -25,39 +25,42 @@ func CreateAuthRouterManager(
 }
 
 func (r *authRouteManager) PopulateRoutes() {
-	r.group.Add("POST", "/auth", r.auth)
+	r.group.Add("POST", "/auth", r.sendCode)
 }
 
-func (r *authRouteManager) auth(c echo.Context) error {
-	authRequest := &types.AuthUserRequest{}
-	if err := c.Bind(authRequest); err != nil {
-		return echo.NewHTTPError(http.StatusBadRequest, err.Error())
-	}
-
-	if err := r.validator.Validate(authRequest); err != nil {
-		return err
-	}
-
-	// TODO: refactor
-	if authRequest.Channel == "email" {
-		return nil
-	}
-
-	token, err := r.userUseCase.PreAuthenticate(authRequest.Resource)
+func (r *authRouteManager) sendCode(c echo.Context) error {
+	authRequest, err := r.resolveAuthRequest(c)
 	if err != nil {
 		return echo.NewHTTPError(http.StatusBadRequest, err.Error())
 	}
 
-	// TODO: In a future rework this
-	user, err := r.userUseCase.GetByPhone(authRequest.Resource)
+	channel, err := types.ResolveByChannel(authRequest.Channel)
 	if err != nil {
-		return err
+		return echo.NewHTTPError(http.StatusBadRequest, err.Error())
 	}
 
-	if err := r.otpUseCase.Send(user, types.Phone); err != nil {
+	user, token, err := r.userUseCase.ProvideOrCreate(authRequest.Resource, channel)
+	if err != nil {
+		return echo.NewHTTPError(http.StatusBadRequest, err.Error())
+	}
+
+	if err := r.otpUseCase.Send(user, channel); err != nil {
 		return err
 	}
 
 	response := &types.TokenResponse{Token: token}
 	return c.JSON(http.StatusOK, response)
+}
+
+func (r *authRouteManager) resolveAuthRequest(c echo.Context) (*types.AuthUserRequest, error) {
+	authRequest := &types.AuthUserRequest{}
+	if err := c.Bind(authRequest); err != nil {
+		return nil, err
+	}
+
+	if err := r.validator.Validate(authRequest); err != nil {
+		return nil, err
+	}
+
+	return authRequest, nil
 }

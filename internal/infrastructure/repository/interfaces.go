@@ -9,6 +9,7 @@ type (
 	UserRepository interface {
 		Get(id int64) (*entity.User, error)
 		GetByPhone(phone string) (*entity.User, error)
+		GetByEmail(email string) (*entity.User, error)
 		GetByOrganization(id int64) ([]*entity.User, error)
 		GetAll() ([]*entity.User, error)
 		Store(phone, email string, roles []entity.Role) (*entity.User, error)

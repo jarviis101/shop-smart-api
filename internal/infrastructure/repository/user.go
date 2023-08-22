@@ -22,6 +22,10 @@ func (r *userRepository) GetByPhone(phone string) (*entity.User, error) {
 	return r.executeQueryRow("SELECT * FROM users WHERE phone = $1", phone)
 }
 
+func (r *userRepository) GetByEmail(email string) (*entity.User, error) {
+	return r.executeQueryRow("SELECT * FROM users WHERE email = $1", email)
+}
+
 func (r *userRepository) GetByOrganization(id int64) ([]*entity.User, error) {
 	return r.executeQuery("SELECT * FROM users WHERE organization_id = $1", id)
 }

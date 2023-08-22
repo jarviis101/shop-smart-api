@@ -52,12 +52,11 @@ func (c *container) resolveUserServiceDependencies() service.UserService {
 
 	userRepository := repository.CreateUserRepository(c.database)
 	userCreator := user.CreateCreator(userRepository)
-	userAuthService := user.CreateAuthService(userRepository, jwtManager, userCreator)
 	userFinder := user.CreateFinder(userRepository)
 	userCollector := user.CreateCollector(userRepository)
 	userModifier := user.CreateModifier(userRepository)
 
-	return service.CreateUserService(userAuthService, userFinder, userCollector, userModifier, userCreator)
+	return service.CreateUserService(userFinder, userCollector, userModifier, userCreator, jwtManager)
 }
 
 func (c *container) resolveOTPServiceDependencies() service.OTPService {

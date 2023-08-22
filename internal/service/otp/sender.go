@@ -7,7 +7,7 @@ import (
 )
 
 type Sender interface {
-	SendOTP(owner *entity.User, channel types.Channel) error
+	SendOTP(owner *entity.User, channel *types.Channel) error
 }
 
 type sender struct {
@@ -19,17 +19,17 @@ func CreateSender(c Creator, cl sms.Client) Sender {
 	return &sender{c, cl}
 }
 
-func (s *sender) SendOTP(owner *entity.User, channel types.Channel) error {
+func (s *sender) SendOTP(owner *entity.User, channel *types.Channel) error {
 	otp, err := s.creator.Create(owner.ID)
 	if err != nil {
 		return err
 	}
 
-	if channel == types.Phone {
+	if channel.IsPhone() {
 		go s.client.Send(owner.Phone, otp.Code)
 	}
 
-	if channel == types.Email {
+	if channel.IsEmail() {
 		// TODO: Complete
 		return nil
 	}
