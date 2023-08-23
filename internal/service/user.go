@@ -56,7 +56,7 @@ func (uc *userService) ProvideOrCreate(resource string, channel *types.Channel) 
 	if err != nil {
 		createdUser, _ := uc.creator.Create(resource)
 
-		token, err := uc.jwtManger.Generate(u, false)
+		token, err := uc.jwtManger.Generate(createdUser, false)
 		return createdUser, token, err
 	}
 
