@@ -3,6 +3,7 @@ package otp
 import (
 	"shop-smart-api/internal/controller/http/types"
 	"shop-smart-api/internal/entity"
+	"shop-smart-api/internal/pkg/email"
 	"shop-smart-api/internal/pkg/sms"
 )
 
@@ -13,10 +14,11 @@ type Sender interface {
 type sender struct {
 	creator Creator
 	client  sms.Client
+	mailer  email.Mailer
 }
 
-func CreateSender(c Creator, cl sms.Client) Sender {
-	return &sender{c, cl}
+func CreateSender(c Creator, cl sms.Client, m email.Mailer) Sender {
+	return &sender{c, cl, m}
 }
 
 func (s *sender) SendOTP(owner *entity.User, channel *types.Channel) error {
@@ -30,8 +32,7 @@ func (s *sender) SendOTP(owner *entity.User, channel *types.Channel) error {
 	}
 
 	if channel.IsEmail() {
-		// TODO: Complete
-		return nil
+		go s.mailer.Send(owner.Email, otp.Code)
 	}
 
 	return nil

@@ -6,3 +6,8 @@ server:
   env: ${APP_ENV}
   debug: ${APP_DEBUG}
   sms_api_key: ${SMS_API_KEY}
+mailer:
+  host: ${MAILER_HOST}
+  port: ${MAILER_PORT}
+  username: ${MAILER_USERNAME}
+  password: ${MAILER_PASSWORD}

@@ -22,7 +22,7 @@ func main() {
 		}
 	}()
 
-	application := server.CreateApplication(db, config.Server)
+	application := server.CreateApplication(db, config)
 	if err := application.Run(); err != nil {
 		log.Printf("Error: %s\n", err.Error())
 	}

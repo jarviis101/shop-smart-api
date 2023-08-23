@@ -29,6 +29,7 @@ func (c *smsClient) Send(phone, code string) {
 	res, err := c.client.SmsSend(msg)
 	if err != nil {
 		log.Printf("Error: %s\n", err.Error())
+		return
 	}
 
 	log.Printf("Status = %d, Ids = %v, Balance = %f", res.Status, res.Ids, res.Balance)

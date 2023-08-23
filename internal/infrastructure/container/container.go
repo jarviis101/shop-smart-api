@@ -4,6 +4,7 @@ import (
 	"database/sql"
 	smsru "github.com/dmitriy-borisov/go-smsru"
 	"shop-smart-api/internal/infrastructure/repository"
+	"shop-smart-api/internal/pkg/email"
 	"shop-smart-api/internal/pkg/jwt"
 	"shop-smart-api/internal/pkg/sms"
 	"shop-smart-api/internal/service"
@@ -25,10 +26,11 @@ type Container interface {
 type container struct {
 	database     *sql.DB
 	serverConfig pkg.Server
+	mailerConfig pkg.Mailer
 }
 
-func CreateContainer(db *sql.DB, sc pkg.Server) Container {
-	return &container{db, sc}
+func CreateContainer(db *sql.DB, sc pkg.Server, mc pkg.Mailer) Container {
+	return &container{db, sc, mc}
 }
 
 func (c *container) ProvideUserService() service.UserService {
@@ -62,11 +64,14 @@ func (c *container) resolveUserServiceDependencies() service.UserService {
 func (c *container) resolveOTPServiceDependencies() service.OTPService {
 	debug, _ := strconv.ParseBool(c.serverConfig.Debug)
 	smsClient := sms.CreateClient(smsru.NewClient(c.serverConfig.SmsApiKey), debug)
+	mailClient := pkg.CreateMailDialer(c.mailerConfig)
+
+	mailer := email.CreateMailer(mailClient)
 
 	otpGenerator := otp.CreateGenerator()
 	otpRepository := repository.CreateOTPRepository(c.database)
 	otpCreator := otp.CreateCreator(otpRepository, otpGenerator)
-	otpSender := otp.CreateSender(otpCreator, smsClient)
+	otpSender := otp.CreateSender(otpCreator, smsClient, mailer)
 	otpValidator := otp.CreateValidator(otpRepository, debug)
 
 	return service.CreateOTPService(otpSender, otpValidator)

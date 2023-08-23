@@ -9,16 +9,16 @@ import (
 )
 
 type application struct {
-	database     *sql.DB
-	serverConfig pkg.Server
+	database *sql.DB
+	appCfg   *pkg.AppConfig
 }
 
-func CreateApplication(db *sql.DB, sc pkg.Server) app.Application {
-	return &application{db, sc}
+func CreateApplication(db *sql.DB, a *pkg.AppConfig) app.Application {
+	return &application{db, a}
 }
 
 func (a *application) Run() error {
-	container := di.CreateContainer(a.database, a.serverConfig)
+	container := di.CreateContainer(a.database, a.appCfg.Server, a.appCfg.Mailer)
 
 	userService := container.ProvideUserService()
 	otpService := container.ProvideOTPService()
@@ -26,7 +26,7 @@ func (a *application) Run() error {
 	transactionService := container.ProvideTransactionService()
 
 	httpServer := controller.CreateServer(
-		a.serverConfig,
+		a.appCfg.Server,
 		otpService,
 		userService,
 		organizationService,

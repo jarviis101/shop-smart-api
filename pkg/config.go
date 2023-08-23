@@ -11,6 +11,13 @@ const (
 	path = "config/config.yaml"
 )
 
+type Mailer struct {
+	Host     string `yaml:"host"`
+	Port     int    `yaml:"port"`
+	Username string `yaml:"username"`
+	Password string `yaml:"password"`
+}
+
 type Database struct {
 	URL string `yaml:"url"`
 }
@@ -26,6 +33,7 @@ type Server struct {
 type AppConfig struct {
 	Database
 	Server
+	Mailer
 }
 
 func CreateConfig() (*AppConfig, error) {
